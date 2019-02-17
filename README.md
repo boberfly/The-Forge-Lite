@@ -1,5 +1,9 @@
-The-Forge-Lite is a stripped-down version of The-Forge which just supplies the renderer interface, uses CMake to build and contains the bare minimum of third-party libraries. The public interfaces also try to reduce the amount of headers needed, but TinySTL is still needed.
+The-Forge-Lite is a stripped-down version of The-Forge which just supplies the renderer interface, uses CMake to build and contains the bare minimum of third-party libraries.
+
+The public interfaces also try to reduce the amount of headers needed, but TinySTL is still needed.
+
 The idea is also to keep these changes to a minimum so that it is easy and straightforward to update from ConfettiFX's [GitHub](https://github.com/ConfettiFX/The-Forge).
+
 If you are new to The-Forge, I highly recommend using the official one and not this one, it is fairly specific to my needs. However it might be useful to you if you just wanted the excellent graphics API abstraction and straightforward build process.
 
 From the official The-Forge readme:

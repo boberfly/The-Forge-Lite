@@ -80,7 +80,7 @@ static const char * g_hackSemanticList[] =
 #include "Interfaces/ILogManager.h"
 #include "VulkanMemoryAllocator/VulkanMemoryAllocator.h"
 #include "OS/Core/GPUConfig.h"
-#include "OS/Image/Image.h"
+#include "Image/Image.h"
 
 #include "Interfaces/IMemoryManager.h"
 

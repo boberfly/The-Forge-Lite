@@ -63,7 +63,7 @@
 //#define USE_PIX
 #endif
 
-#include "Renderer/ImageEnums.h" // Was OS/Image/Image.h but only the enums are needed
+#include "Image/ImageEnums.h" // Was OS/Image/Image.h but only the enums are needed
 #include "TinySTL/string.h"
 #include "TinySTL/vector.h"
 #include "TinySTL/unordered_map.h"

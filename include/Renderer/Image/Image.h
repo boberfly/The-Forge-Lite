@@ -25,7 +25,7 @@
 #ifndef COMMON_3_OS_IMAGE_IMAGE_H_
 #define COMMON_3_OS_IMAGE_IMAGE_H_
 
-#include "Renderer/ImageEnums.h"
+#include "ImageEnums.h"
 #include "Interfaces/IFileSystem.h"
 #include "TinySTL/string.h"
 

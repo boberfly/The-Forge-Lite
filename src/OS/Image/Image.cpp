@@ -22,7 +22,7 @@
  * under the License.
 */
 
-#include "Image.h"
+#include "Image/Image.h"
 #include "Interfaces/ILogManager.h"
 #include "Interfaces/IMemoryManager.h"
 #include "TinyEXR/tinyexr.h"

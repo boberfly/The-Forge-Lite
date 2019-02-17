@@ -46,7 +46,6 @@ include_directories(
 # Public headers
 set( THEFORGE_PUBLIC_H_FILES
     include/Renderer/GpuProfiler.h
-    include/Renderer/ImageEnums.h
     include/Renderer/IRay.h
     include/Renderer/IRenderer.h
     include/Renderer/IShaderReflection.h
@@ -65,6 +64,11 @@ set( THEFORGE_INTERFACES_FILES
     include/Renderer/Interfaces/ITimeManager.h
 )
 
+set( THEFORGE_IMAGE_H_FILES
+    include/Renderer/Image/Image.h
+    include/Renderer/Image/ImageEnums.h
+)
+
 # Core
 set( THEFORGE_CORE_FILES
     src/OS/Core/Atomics.h
@@ -81,11 +85,9 @@ set( THEFORGE_CORE_FILES
 # Image
 set( THEFORGE_IMAGE_FILES
     src/OS/Image/Image.cpp
-    src/OS/Image/Image.h
+    include/Renderer/Image/Image.h
     third_party/TinyEXR/tinyexr.cpp
     )
-install( FILES src/OS/Image/Image.h
-        DESTINATION include/Renderer/Image )
 
 # Logging
 if( USE_LOGGING )
@@ -195,6 +197,12 @@ set( THEFORGE_VULKAN_DEP_FILES
     third_party/volk/volk.h
     )
 
+# Image library
+add_library( TFImage STATIC 
+    ${THEFORGE_IMAGE_FILES}
+    )
+install( TARGETS TFImage DESTINATION lib )
+
 # Android library
 if( BUILD_ANDROID )
     add_library( TFAndroid STATIC
@@ -255,7 +263,6 @@ if( BUILD_DIRECT3D11 )
         ${THEFORGE_COMMON_FILES}
         ${THEFORGE_DIRECT3D11_FILES}
         ${THEFORGE_DIRECT3D11_DEP_FILES}
-        ${THEFORGE_IMAGE_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
@@ -272,7 +279,6 @@ if( BUILD_DIRECT3D12 )
         ${THEFORGE_COMMON_FILES}
         ${THEFORGE_DIRECT3D12_FILES}
         ${THEFORGE_DIRECT3D12_DEP_FILES}
-        ${THEFORGE_IMAGE_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
@@ -289,7 +295,6 @@ if( BUILD_METAL )
         ${THEFORGE_COMMON_FILES}
         ${THEFORGE_METAL_FILES}
         ${THEFORGE_METAL_DEP_FILES}
-        ${THEFORGE_IMAGE_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
@@ -306,7 +311,6 @@ if( BUILD_VULKAN )
         ${THEFORGE_COMMON_FILES}
         ${THEFORGE_VULKAN_FILES}
         ${THEFORGE_VULKAN_DEP_FILES}
-        ${THEFORGE_IMAGE_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
@@ -320,3 +324,6 @@ install( FILES ${THEFORGE_PUBLIC_H_FILES}
 
 install( FILES ${THEFORGE_INTERFACES_FILES}
         DESTINATION include/Renderer/Interfaces )
+
+install( FILES ${THEFORGE_IMAGE_H_FILES}
+        DESTINATION include/Renderer/Image )

@@ -33,11 +33,11 @@
 #import <simd/simd.h>
 #import <MetalKit/MetalKit.h>
 
-#import "../IRenderer.h"
+#import "IRenderer.h"
 #include "MetalMemoryAllocator.h"
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../../OS/Core/GPUConfig.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/ILogManager.h"
+#include "Core/GPUConfig.h"
+#include "Interfaces/IMemoryManager.h"
 
 #define MAX_BUFFER_BINDINGS 31
 

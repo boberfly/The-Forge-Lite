@@ -24,9 +24,9 @@
 
 #include <algorithm>
 
-#include "../Interfaces/IThread.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IThread.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 MutexLock::MutexLock(Mutex& rhs): mMutex(rhs) { rhs.Acquire(); }
 

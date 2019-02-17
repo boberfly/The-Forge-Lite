@@ -23,9 +23,9 @@
 */
 
 #include "Image.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
-#include "../../ThirdParty/OpenSource/TinyEXR/tinyexr.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
+#include "TinyEXR/tinyexr.h"
 //stb_image
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_MALLOC conf_malloc
@@ -35,14 +35,14 @@
 #if defined(__ANDROID__)
 #define STBI_NO_SIMD
 #endif
-#include "../../ThirdParty/OpenSource/Nothings/stb_image.h"
+#include "Nothings/stb_image.h"
 //stb_image_write
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC conf_malloc
 #define STBIW_REALLOC conf_realloc
 #define STBIW_FREE conf_free
 #define STBIW_ASSERT ASSERT
-#include "../../ThirdParty/OpenSource/Nothings/stb_image_write.h"
+#include "Nothings/stb_image_write.h"
 
 // --- IMAGE HEADERS ---
 

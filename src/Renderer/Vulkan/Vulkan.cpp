@@ -75,13 +75,14 @@ static const char * g_hackSemanticList[] =
 #define strncpy_s strncpy
 #endif
 
-#include "../IRenderer.h"
-#include "../../ThirdParty/OpenSource/TinySTL/hash.h"
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../../ThirdParty/OpenSource/VulkanMemoryAllocator/VulkanMemoryAllocator.h"
-#include "../../OS/Core/GPUConfig.h"
+#include "IRenderer.h"
+#include "TinySTL/hash.h"
+#include "Interfaces/ILogManager.h"
+#include "VulkanMemoryAllocator/VulkanMemoryAllocator.h"
+#include "OS/Core/GPUConfig.h"
+#include "OS/Image/Image.h"
 
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 extern void
 			vk_createShaderReflection(const uint8_t* shaderCode, uint32_t shaderSize, ShaderStage shaderStage, ShaderReflection* pOutReflection);
@@ -6375,5 +6376,5 @@ void setTextureName(Renderer* pRenderer, Texture* pTexture, const char* pName)
 #if defined(__cplusplus) && defined(ENABLE_RENDERER_RUNTIME_SWITCH)
 }    // namespace RENDERER_CPP_NAMESPACE
 #endif
-#include "../../../Common_3/ThirdParty/OpenSource/volk/volk.c"
+#include "../../../third_party/volk/volk.c"
 #endif

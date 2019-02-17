@@ -31,15 +31,15 @@
 #define RENDERER_IMPLEMENTATION
 #define IID_ARGS IID_PPV_ARGS
 
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../IRenderer.h"
-#include "../../OS/Core/RingBuffer.h"
-#include "../../ThirdParty/OpenSource/TinySTL/hash.h"
-#include "../../ThirdParty/OpenSource/winpixeventruntime/Include/WinPixEventRuntime/pix3.h"
-#include "../../OS/Core/GPUConfig.h"
+#include "TinySTL/string.h"
+#include "TinySTL/unordered_map.h"
+#include "TinySTL/vector.h"
+#include "Interfaces/ILogManager.h"
+#include "IRenderer.h"
+#include "OS/Core/RingBuffer.h"
+#include "TinySTL/hash.h"
+#include "winpixeventruntime/Include/WinPixEventRuntime/pix3.h"
+#include "OS/Core/GPUConfig.h"
 #include "Direct3D11Commands.h"
 
 #if !defined(_WIN32)
@@ -67,7 +67,7 @@ extern "C"
 }
 
 //#include "Direct3D11MemoryAllocator.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "OS/Interfaces/IMemoryManager.h"
 
 // clang-format off
 extern void d3d11_createShaderReflection(const uint8_t* shaderCode, uint32_t shaderSize, ShaderStage shaderStage, ShaderReflection* pOutReflection);

@@ -39,10 +39,10 @@
 #import <MetalKit/MetalKit.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#import "../IRenderer.h"
-#import "../IRay.h"
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#import "IRenderer.h"
+#import "IRay.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 #define MAX_BUFFER_BINDINGS 31
 

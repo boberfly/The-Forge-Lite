@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../IRenderer.h"
+#include "IRenderer.h"
 
 /* Utility functions to cache commands so that we can execute them when client
  * calls on queueSubmit.

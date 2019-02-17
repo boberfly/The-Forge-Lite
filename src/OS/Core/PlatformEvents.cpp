@@ -22,8 +22,8 @@
  * under the License.
 */
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "TinySTL/vector.h"
 
 static tinystl::vector<WindowResizeEventHandler> gWindowResizeCallbacks;
 

@@ -27,9 +27,9 @@
 #include <io.h>    // _isatty
 
 // interfaces
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 void outputLogString(const char* pszStr)
 {

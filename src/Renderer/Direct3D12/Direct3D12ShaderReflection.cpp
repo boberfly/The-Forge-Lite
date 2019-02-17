@@ -23,18 +23,18 @@
 */
 
 #ifdef DIRECT3D12
-#include "../IRenderer.h"
-#include "../../OS/Interfaces/ILogManager.h"
+#include "IRenderer.h"
+#include "Interfaces/ILogManager.h"
 
 #ifdef _DURANGO
 #include "..\..\..\Xbox\CommonXBOXOne_3\OS\XBoxPrivateHeaders.h"
 #else
 #include <d3dcompiler.h>
-#include "../../../Common_3/ThirdParty/OpenSource/DirectXShaderCompiler/dxcapi.use.h"
+#include "DirectXShaderCompiler/dxcapi.use.h"
 extern dxc::DxcDllSupport gDxcDllHelper;
 #endif
 
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 static DescriptorType sD3D12_TO_DESCRIPTOR[] = {
 	DESCRIPTOR_TYPE_UNIFORM_BUFFER,    //D3D_SIT_CBUFFER

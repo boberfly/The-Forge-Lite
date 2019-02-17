@@ -24,10 +24,10 @@
 
 #ifdef __linux__
 
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

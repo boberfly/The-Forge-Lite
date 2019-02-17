@@ -23,10 +23,10 @@
 */
 
 #ifdef __ANDROID__
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 #include <unistd.h>
 #include <android/asset_manager.h>
 #define MAX_PATH PATH_MAX

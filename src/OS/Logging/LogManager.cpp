@@ -23,10 +23,10 @@
 */
 
 #include "LogManager.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 tinystl::string GetTimeStamp()
 {

@@ -33,7 +33,7 @@
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
-#include "../Nothings/stb_hash.h"
+#include "Nothings/stb_hash.h"
 
 #ifdef __APPLE__
 #define __forceinline inline

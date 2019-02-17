@@ -76,7 +76,7 @@ void drawFrame(float deltaTime);
 #ifndef _IAPP_H_
 #define _IAPP_H_
 
-#include "../../../Common_3/ThirdParty/OpenSource/TinySTL/string.h"
+#include "TinySTL/string.h"
 
 class IApp
 {

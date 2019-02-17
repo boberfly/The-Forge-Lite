@@ -32,14 +32,14 @@
 #define IID_ARGS IID_PPV_ARGS
 #endif
 
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../IRenderer.h"
-#include "../../OS/Core/RingBuffer.h"
-#include "../../ThirdParty/OpenSource/TinySTL/hash.h"
-#include "../../ThirdParty/OpenSource/winpixeventruntime/Include/WinPixEventRuntime/pix3.h"
-#include "../../OS/Core/GPUConfig.h"
+#include "TinySTL/string.h"
+#include "TinySTL/unordered_map.h"
+#include "Interfaces/ILogManager.h"
+#include "IRenderer.h"
+#include "OS/Core/RingBuffer.h"
+#include "TinySTL/hash.h"
+#include "winpixeventruntime/Include/WinPixEventRuntime/pix3.h"
+#include "OS/Core/GPUConfig.h"
 
 #include "Direct3D12Hooks.h"
 
@@ -93,7 +93,7 @@ extern "C"
 #endif
 
 #include "Direct3D12MemoryAllocator.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "OS/Interfaces/IMemoryManager.h"
 
 extern void
 			d3d12_createShaderReflection(const uint8_t* shaderCode, uint32_t shaderSize, ShaderStage shaderStage, ShaderReflection* pOutReflection);

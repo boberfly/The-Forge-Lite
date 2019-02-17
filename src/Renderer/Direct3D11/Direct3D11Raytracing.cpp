@@ -1,5 +1,5 @@
 // Renderer
-#include "../IRay.h"
+#include "IRay.h"
 
 bool isRaytracingSupported(Renderer* /*pRenderer*/) {
 	return false;

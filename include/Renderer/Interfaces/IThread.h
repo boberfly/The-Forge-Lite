@@ -22,9 +22,9 @@
  * under the License.
 */
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Math/MathTypes.h"
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
+#include "Interfaces/IOperatingSystem.h"
+//#include "../Math/MathTypes.h"
+#include "TinySTL/vector.h"
 
 #ifndef _THREAD_H_
 #define _THREAD_H_

@@ -24,10 +24,10 @@
 
 #ifdef _WIN32
 
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #if defined(DIRECT3D12)
 #define RESOURCE_DIR "Shaders/D3D12"

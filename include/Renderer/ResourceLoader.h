@@ -29,7 +29,14 @@
 
 #pragma once
 
-#include "../OS/Core/Atomics.h"
+#include "Image/Image.h"
+//#include "OS/Core/Atomics.h"
+#ifdef _WIN32
+    #define BASE_ALIGN(x) __declspec( align( x ) ) 
+#else
+    #define BASE_ALIGN(x)  __attribute__ ((aligned( x )))
+#endif
+typedef volatile BASE_ALIGN(8) uint64_t tfrg_atomic64_t; // for SyncToken, from the header above
 
 // Resource Loader Interface
 #if !defined(TARGET_IOS)

@@ -39,7 +39,7 @@
 
 #include <new>
 #ifdef USE_MEMORY_TRACKING
-#include "../../ThirdParty/OpenSource/FluidStudios/MemoryManager/mmgr.h"
+#include "FluidStudios/MemoryManager/mmgr.h"
 
 #define conf_malloc(size) m_allocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, (size))
 #define conf_calloc(count, size) m_allocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_calloc, ((size) * (count)))

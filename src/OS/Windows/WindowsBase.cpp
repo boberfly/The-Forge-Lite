@@ -30,21 +30,21 @@
 #include <ntverp.h>
 
 #ifndef NO_GAINPUT
-#include "../../../Middleware_3/Input/InputSystem.h"
-#include "../../../Middleware_3/Input/InputMappings.h"
+#include "Input/InputSystem.h"
+#include "Input/InputMappings.h"
 #endif
 
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
+#include "TinySTL/vector.h"
+#include "TinySTL/unordered_map.h"
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IPlatformEvents.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/ITimeManager.h"
-#include "../Interfaces/IThread.h"
-#include "../Interfaces/IApp.h"
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IPlatformEvents.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/ITimeManager.h"
+#include "Interfaces/IThread.h"
+#include "Interfaces/IApp.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 static IApp* pApp = NULL;
 

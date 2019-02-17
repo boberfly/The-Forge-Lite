@@ -24,8 +24,8 @@
 
 #if defined(DIRECT3D12)
 
-#include "..\IRenderer.h"
-#include "..\..\OS\Interfaces\ILogManager.h"
+#include "IRenderer.h"
+#include "Interfaces/ILogManager.h"
 
 #ifdef _DURANGO
 #include "..\..\..\Xbox\CommonXBOXOne_3\OS\XBoxPrivateHeaders.h"

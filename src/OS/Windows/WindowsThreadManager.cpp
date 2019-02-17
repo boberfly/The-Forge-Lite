@@ -24,10 +24,10 @@
 
 #ifdef _WIN32
 
-#include "../Interfaces/IThread.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IThread.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 DWORD WINAPI ThreadFunctionStatic(void* data)
 {

@@ -25,7 +25,7 @@
 #ifndef RESOURCE_RESOURCE_H
 #define RESOURCE_RESOURCE_H
 
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 typedef struct ResourceAllocator MemoryAllocator;
 

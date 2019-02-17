@@ -24,10 +24,10 @@
 
 #pragma once
 
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
+#include "TinySTL/vector.h"
+#include "TinySTL/string.h"
 
-#include "../../OS/Interfaces/IThread.h"
+#include "Interfaces/IThread.h"
 
 enum LogLevel
 {

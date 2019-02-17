@@ -22,9 +22,9 @@
  * under the License.
 */
 
-#include "../Interfaces/ITimeManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/ITimeManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #ifndef _WIN32
 #include <unistd.h>    // for sleep()

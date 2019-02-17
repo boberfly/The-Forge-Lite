@@ -27,10 +27,10 @@
 #import <Foundation/Foundation.h>
 #include <AppKit/NSOpenPanel.h>
 
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #include <unistd.h>
 #include <limits.h>       // for UINT_MAX

@@ -25,9 +25,9 @@
 #ifndef COMMON_3_OS_IMAGE_IMAGE_H_
 #define COMMON_3_OS_IMAGE_IMAGE_H_
 
-#include "ImageEnums.h"
-#include "../Interfaces/IFileSystem.h"
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
+#include "Renderer/ImageEnums.h"
+#include "Interfaces/IFileSystem.h"
+#include "TinySTL/string.h"
 
 #define ALL_MIPLEVELS 127
 

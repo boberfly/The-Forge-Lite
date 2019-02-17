@@ -29,19 +29,21 @@
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
 
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
+#include "TinySTL/vector.h"
+#include "TinySTL/unordered_map.h"
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IPlatformEvents.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/ITimeManager.h"
-#include "../Interfaces/IThread.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IPlatformEvents.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/ITimeManager.h"
+#include "Interfaces/IThread.h"
 
-#include "../../../Middleware_3/Input/InputSystem.h"
-#include "../../../Middleware_3/Input/InputMappings.h"
+#ifndef NO_GAINPUT
+#include "Input/InputSystem.h"
+#include "Input/InputMappings.h"
+#endif
 
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 #define CONFETTI_WINDOW_CLASS L"confetti"
 #define MAX_CURSOR_DELTA 200
@@ -85,9 +87,23 @@ void requestShutdown()
 	XSendEvent(gWindow.display, gWindow.xlib_window, false, 0, &event);
 }
 
-bool getKeyDown(int key) { return InputSystem::IsButtonPressed(key); }
+bool getKeyDown(int key)
+{
+#ifndef NO_GAINPUT
+	return InputSystem::IsButtonPressed(key);
+#else
+	return false;
+#endif
+}
 
-bool getKeyUp(int key) { return InputSystem::IsButtonReleased(key); }
+bool getKeyUp(int key)
+{
+#ifndef NO_GAINPUT
+	return InputSystem::IsButtonReleased(key);
+#else
+	return false;
+#endif
+}
 
 bool getJoystickButtonDown(int button)
 {
@@ -142,8 +158,8 @@ float2 getDpiScale() { return { gRetinaScale, gRetinaScale }; }
 /************************************************************************/
 // App Entrypoint
 /************************************************************************/
-#include "../Interfaces/IApp.h"
-#include "../Interfaces/IFileSystem.h"
+#include "Interfaces/IApp.h"
+#include "Interfaces/IFileSystem.h"
 
 static IApp* pApp = NULL;
 
@@ -250,6 +266,7 @@ bool handleMessages(WindowsDesc* winDesc)
 	bool quit = false;
 	//this needs to be done before updating the events
 	//that way current frame data will be delta after resetting mouse position
+#ifndef NO_GAINPUT
 	if (InputSystem::IsMouseCaptured())
 	{
 		ButtonData button = InputSystem::GetButtonData(KEY_UI_MOVE);
@@ -338,6 +355,7 @@ bool handleMessages(WindowsDesc* winDesc)
 		isCaptured = true;
 		InputSystem::SetMouseCapture(true);
 	}
+#endif
 
 	return quit;
 }
@@ -380,7 +398,9 @@ int LinuxMain(int argc, char** argv, IApp* app)
 	if (!pApp->Load())
 		return EXIT_FAILURE;
 
+#ifndef NO_GAINPUT
 	InputSystem::Init(pSettings->mWidth, pSettings->mHeight);
+#endif
 
 	registerWindowResizeEvent(onResize);
 
@@ -393,7 +413,9 @@ int LinuxMain(int argc, char** argv, IApp* app)
 		if (deltaTime > 0.15f)
 			deltaTime = 0.05f;
 
+#ifndef NO_GAINPUT
 		InputSystem::Update();
+#endif
 
 		quit = handleMessages(&gWindow);
 
@@ -408,7 +430,9 @@ int LinuxMain(int argc, char** argv, IApp* app)
 #endif
 	}
 
+#ifndef NO_GAINPUT
 	InputSystem::Shutdown();
+#endif
 	pApp->Unload();
 	pApp->Exit();
 

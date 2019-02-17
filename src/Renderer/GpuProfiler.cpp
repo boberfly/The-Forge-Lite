@@ -25,9 +25,9 @@
 #include "IRenderer.h"
 #include "GpuProfiler.h"
 #include "ResourceLoader.h"
-#include "../OS/Interfaces/IThread.h"
-#include "../OS/Interfaces/ILogManager.h"
-#include "../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/IThread.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 #if __linux__
 #include <linux/limits.h>    //PATH_MAX declaration
 #define MAX_PATH PATH_MAX

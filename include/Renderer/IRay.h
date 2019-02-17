@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRenderer.h"
+#include "Renderer/IRenderer.h"
 
 #ifdef __cplusplus
 #ifndef MAKE_ENUM_FLAG

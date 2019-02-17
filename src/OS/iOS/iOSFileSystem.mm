@@ -25,12 +25,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
+#include "TinySTL/unordered_map.h"
 
-#include "../Interfaces/IFileSystem.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #include <sys/stat.h>
 #include <unistd.h>

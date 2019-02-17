@@ -24,9 +24,10 @@
 
 #include "IRenderer.h"
 #include "ResourceLoader.h"
-#include "../OS/Interfaces/ILogManager.h"
-#include "../OS/Interfaces/IMemoryManager.h"
-#include "../OS/Interfaces/IThread.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IThread.h"
+#include "OS/Core/Atomics.h"
 
 //this is needed for unix as PATH_MAX is defined instead of MAX_PATH
 #ifndef _WIN32

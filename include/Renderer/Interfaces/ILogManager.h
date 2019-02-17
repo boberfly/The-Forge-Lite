@@ -24,9 +24,11 @@
 
 #pragma once
 
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../../OS/Logging/LogManager.h"
-#include "ITimeManager.h"
+#include "TinySTL/string.h"
+#ifdef USE_LOGGING
+#include "OS/Logging/LogManager.h"
+#endif
+#include "Interfaces/ITimeManager.h"
 
 #ifndef USE_LOGGING
 #define USE_LOGGING 1

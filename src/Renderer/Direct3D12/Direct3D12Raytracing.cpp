@@ -6,16 +6,16 @@
 #include <d3dcompiler.h>
 
 // OS
-#include "../../OS/Interfaces/ILogManager.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_set.h"
+#include "Interfaces/ILogManager.h"
+#include "TinySTL/unordered_set.h"
 
 // Renderer
-#include "../IRay.h"
-#include "../IRenderer.h"
-#include "../ResourceLoader.h"
+#include "IRay.h"
+#include "IRenderer.h"
+#include "ResourceLoader.h"
 #include "Direct3D12Hooks.h"
 #include "Direct3D12MemoryAllocator.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 #define D3D12_GPU_VIRTUAL_ADDRESS_NULL	((D3D12_GPU_VIRTUAL_ADDRESS)0)
 #define D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN   ((D3D12_GPU_VIRTUAL_ADDRESS)-1)

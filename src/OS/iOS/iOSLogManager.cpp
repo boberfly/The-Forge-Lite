@@ -25,11 +25,11 @@
 #include <cstdio>
 #include <iostream>
 #include <unistd.h>
-#include "../Interfaces/IOperatingSystem.h"
+#include "Interfaces/IOperatingSystem.h"
 
 // interfaces
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 void outputLogString(const char* pszStr)
 {

@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "IOperatingSystem.h"
+#include "Interfaces/IOperatingSystem.h"
 
 /// Low res OS timer
 class Timer

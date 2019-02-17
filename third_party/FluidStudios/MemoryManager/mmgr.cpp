@@ -84,7 +84,7 @@
 #include <time.h>
 #include <stdarg.h>
 #include <new>
-#include "../../../../OS/Interfaces/IOperatingSystem.h"
+#include "Interfaces/IOperatingSystem.h"
 
 #if !defined(WIN32) && !defined(DURANGO)
 #include <unistd.h>

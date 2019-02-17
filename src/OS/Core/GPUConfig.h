@@ -1,10 +1,10 @@
 #pragma once
 
 #ifndef TARGET_IOS
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IFileSystem.h"
-#include "../../Renderer/IRenderer.h"
+#include "TinySTL/string.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "IRenderer.h"
 
 #ifndef METAL
 static GPUPresetLevel getSinglePresetLevel(

@@ -24,10 +24,10 @@
 
 #pragma once
 
-#include "../../Renderer/IRenderer.h"
-#include "../../Renderer/ResourceLoader.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Renderer/IRenderer.h"
+#include "Renderer/ResourceLoader.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 /************************************************************************/
 /* RING BUFFER MANAGEMENT											  */
 /************************************************************************/

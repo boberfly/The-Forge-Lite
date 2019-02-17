@@ -22,12 +22,12 @@
  * under the License.
 */
 
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IMemoryManager.h"
 
 #ifdef USE_MEMORY_TRACKING
-#include "../../ThirdParty/OpenSource/FluidStudios/MemoryManager/nommgr.h"
+#include "FluidStudios/MemoryManager/nommgr.h"
 #define malloc(sz) m_allocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_malloc, sz)
 #define calloc(count, size) m_allocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_calloc, ((size) * (count)))
 #define realloc(ptr, sz) m_reallocator(__FILE__, __LINE__, __FUNCTION__, m_alloc_realloc, sz, ptr)
@@ -47,7 +47,7 @@ void* conf_realloc(void* ptr, size_t size) { return realloc(ptr, size); }
 void conf_free(void* ptr) { free(ptr); }
 
 // Just include the cpp here so we don't have to add it to the all projects
-#include "../../ThirdParty/OpenSource/FluidStudios/MemoryManager/mmgr.cpp"
+#include "FluidStudios/MemoryManager/mmgr.cpp"
 #else
 #undef malloc
 #undef calloc

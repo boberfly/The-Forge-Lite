@@ -29,7 +29,7 @@
 // ModifiedSonyMath ReadMe:
 // - All you need to do is include the public header file vectormath.hpp. It will expose the relevant parts of
 //   the library for you and try to select the SSE implementation if supported.
-#include "../../ThirdParty/OpenSource/ModifiedSonyMath/vectormath.hpp"
+#include "ModifiedSonyMath/vectormath.hpp"
 
 typedef Vector2 vec2;
 typedef Vector3 vec3;

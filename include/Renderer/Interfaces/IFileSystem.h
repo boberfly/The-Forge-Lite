@@ -26,9 +26,9 @@
 //Use Virtual FileSystem
 //#define USE_VFS
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "TinySTL/string.h"
+#include "TinySTL/vector.h"
 
 typedef void* FileHandle;
 typedef void (*FileDialogCallbackFn)(tinystl::string url, void* userData);

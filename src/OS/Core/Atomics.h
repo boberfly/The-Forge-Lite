@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "../../ThirdParty/OpenSource/EnkiTS/Atomics.h"
+#include "EnkiTS/Atomics.h"
 
 typedef volatile BASE_ALIGN(4) uint32_t tfrg_atomic32_t;
 typedef volatile BASE_ALIGN(8) uint64_t tfrg_atomic64_t;

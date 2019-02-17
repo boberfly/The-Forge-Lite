@@ -30,18 +30,18 @@
 #include <android/native_activity.h>
 #include <android/log.h>
 
-#include "../../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../../ThirdParty/OpenSource/TinySTL/unordered_map.h"
+#include "TinySTL/vector.h"
+#include "TinySTL/unordered_map.h"
 
-#include "../Interfaces/IOperatingSystem.h"
-#include "../Interfaces/IPlatformEvents.h"
-#include "../Interfaces/ILogManager.h"
-#include "../Interfaces/ITimeManager.h"
-#include "../Interfaces/IThread.h"
+#include "Interfaces/IOperatingSystem.h"
+#include "Interfaces/IPlatformEvents.h"
+#include "Interfaces/ILogManager.h"
+#include "Interfaces/ITimeManager.h"
+#include "Interfaces/IThread.h"
 
-#include "../../../Middleware_3/Input/InputSystem.h"
-#include "../../../Middleware_3/Input/InputMappings.h"
-#include "../Interfaces/IMemoryManager.h"
+#include "Input/InputSystem.h"
+#include "Input/InputMappings.h"
+#include "Interfaces/IMemoryManager.h"
 #include "AndroidFileSystem.cpp"
 
 #define CONFETTI_WINDOW_CLASS L"confetti"

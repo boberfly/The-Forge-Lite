@@ -23,7 +23,7 @@
 */
 
 #pragma once
-#include "IOperatingSystem.h"
+#include "Interfaces/IOperatingSystem.h"
 
 #if defined(_APPLE_)
 typedef struct tagRECT

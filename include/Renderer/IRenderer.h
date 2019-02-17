@@ -49,7 +49,7 @@
 #elif defined(__linux__)
 #define VK_USE_PLATFORM_XLIB_KHR    //Use Xlib or Xcb as display server, defaults to Xlib
 #endif
-#include "../../Common_3/ThirdParty/OpenSource/volk/volk.h"
+#include "volk/volk.h"
 #endif
 #if defined(METAL)
 #import <MetalKit/MetalKit.h>
@@ -63,12 +63,12 @@
 //#define USE_PIX
 #endif
 
-#include "../OS/Image/Image.h"
-#include "../ThirdParty/OpenSource/TinySTL/string.h"
-#include "../ThirdParty/OpenSource/TinySTL/vector.h"
-#include "../ThirdParty/OpenSource/TinySTL/unordered_map.h"
-#include "../OS/Interfaces/IOperatingSystem.h"
-#include "../OS/Interfaces/IThread.h"
+#include "Renderer/ImageEnums.h" // Was OS/Image/Image.h but only the enums are needed
+#include "TinySTL/string.h"
+#include "TinySTL/vector.h"
+#include "TinySTL/unordered_map.h"
+#include "Interfaces/IOperatingSystem.h" // Moved this to public as WindowsDesc is defined in here
+#include "Interfaces/IThread.h" // I don't think this is needed in this header
 
 #ifdef __cplusplus
 #ifndef MAKE_ENUM_FLAG

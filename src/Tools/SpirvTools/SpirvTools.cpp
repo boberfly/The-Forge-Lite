@@ -26,7 +26,7 @@
 
 #define SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS
 
-#include "../SPIRV_Cross/spirv_cross.hpp"
+#include "SPIRV_Cross/spirv_cross.hpp"
 
 //#include "OS/Interfaces/IMemoryManager.h" //NOTE: this should be the last include in a .cpp
 

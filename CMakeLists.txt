@@ -40,8 +40,13 @@ include_directories(
     include/Renderer
     src
     src/OS
+    src/Tools
     third_party
 )
+
+# Build Spirv-Cross from CMake
+option(SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS "Instead of throwing exceptions assert" ON)
+add_subdirectory( third_party/SPIRV_Cross )
 
 # Public headers
 set( THEFORGE_PUBLIC_H_FILES
@@ -191,8 +196,8 @@ set( THEFORGE_VULKAN_FILES
     src/Renderer/Vulkan/VulkanShaderReflection.cpp
     )
 set( THEFORGE_VULKAN_DEP_FILES
-    third_party/SpirvTools/SpirvTools.cpp
-    third_party/SpirvTools/SpirvTools.h
+    src/Tools/SpirvTools/SpirvTools.cpp
+    src/Tools/SpirvTools/SpirvTools.h
     third_party/volk/volk.c
     third_party/volk/volk.h
     )
@@ -315,7 +320,8 @@ if( BUILD_VULKAN )
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
     target_compile_definitions( TFVulkan PRIVATE VULKAN )
-    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} )
+    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} spirv-cross-core )
+    add_dependencies( TFVulkan spirv-cross-core )
     install( TARGETS TFVulkan DESTINATION lib )
 endif()
 

@@ -20,6 +20,9 @@ option( BUILD_VULKAN "Build Vulkan" OFF )
 option( USE_LOGGING "Use Logging" ON )
 option( USE_MEMORY_TRACKING "Use Memory Tracking" OFF )
 
+# Dependencies
+option( BUILD_SPIRV_CROSS "Build SPIRV-Cross, needed for Vulkan reflection" ON )
+
 if( BUILD_DIRECT3D11 )
     find_package( D3D11 REQUIRED )
     include_directories( ${D3D11_INCLUDE_DIRS} )
@@ -45,8 +48,11 @@ include_directories(
 )
 
 # Build Spirv-Cross from CMake
-option(SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS "Instead of throwing exceptions assert" ON)
-add_subdirectory( third_party/SPIRV_Cross )
+if( BUILD_SPIRV_CROSS )
+    option( SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS "Instead of throwing exceptions assert" ON )
+    add_subdirectory( third_party/SPIRV_Cross )
+    set( THEFORGE_SPIRV_CROSS_LIBRARY spirv-cross-core )
+endif()
 
 # Public headers
 set( THEFORGE_PUBLIC_H_FILES
@@ -320,8 +326,10 @@ if( BUILD_VULKAN )
         ${THEFORGE_MEMORYTRACKING_FILES}
         )
     target_compile_definitions( TFVulkan PRIVATE VULKAN )
-    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} spirv-cross-core )
-    add_dependencies( TFVulkan spirv-cross-core )
+    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} ${THEFORGE_SPIRV_CROSS_LIBRARY} )
+    if( BUILD_SPIRV_CROSS )
+        add_dependencies( TFVulkan ${THEFORGE_SPIRV_CROSS_LIBRARY} )
+    endif()
     install( TARGETS TFVulkan DESTINATION lib )
 endif()
 

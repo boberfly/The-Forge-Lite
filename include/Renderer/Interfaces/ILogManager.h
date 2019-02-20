@@ -30,9 +30,9 @@
 #endif
 #include "Interfaces/ITimeManager.h"
 
-#ifndef USE_LOGGING
-#define USE_LOGGING 1
-#endif
+//#ifndef USE_LOGGING
+//#define USE_LOGGING 1
+//#endif
 
 void _ErrorMsg(int line, const char*, const char* string, ...);
 void _WarningMsg(int line, const char*, const char* string, ...);

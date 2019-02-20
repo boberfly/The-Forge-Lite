@@ -20,8 +20,17 @@ option( BUILD_VULKAN "Build Vulkan" OFF )
 option( USE_LOGGING "Use Logging" ON )
 option( USE_MEMORY_TRACKING "Use Memory Tracking" OFF )
 
+option( BUILD_EXAMPLES "Build Examples" OFF )
+
 # Dependencies
 option( BUILD_SPIRV_CROSS "Build SPIRV-Cross, needed for Vulkan reflection" ON )
+
+find_package( Threads REQUIRED )
+
+if( BUILD_LINUX )
+    find_package( X11 REQUIRED )
+    include_directories( ${X11_INCLUDE_DIR} )
+endif()
 
 if( BUILD_DIRECT3D11 )
     find_package( D3D11 REQUIRED )
@@ -42,6 +51,7 @@ include_directories(
     include
     include/Renderer
     src
+    src/Examples
     src/OS
     src/Tools
     third_party
@@ -117,11 +127,12 @@ set( THEFORGE_MATH_FILES
     )
 
 # Memory Tracking
+set( THEFORGE_MEMORYTRACKING_FILES
+    src/OS/MemoryTracking/MemoryTrackingManager.cpp
+    )
+
 if( USE_MEMORY_TRACKING )
     add_definitions( -DUSE_MEMORY_TRACKING )
-    set( THEFORGE_MEMORYTRACKING_FILES
-        src/OS/MemoryTracking/MemoryTrackingManager.cpp
-        )
 endif()
 
 # Common
@@ -219,6 +230,7 @@ if( BUILD_ANDROID )
     add_library( TFAndroid STATIC
         ${THEFORGE_ANDROID_FILES}
         ${THEFORGE_MATH_FILES}
+        ${THEFORGE_MEMORYTRACKING_FILES}
     )
     target_compile_definitions( TFAndroid PRIVATE NO_GAINPUT )
     install( TARGETS TFAndroid DESTINATION lib )
@@ -229,6 +241,7 @@ if( BUILD_IOS )
     add_library( TFiOS STATIC
         ${THEFORGE_IOS_FILES}
         ${THEFORGE_MATH_FILES}
+        ${THEFORGE_MEMORYTRACKING_FILES}
     )
     target_compile_definitions( TFiOS PRIVATE NO_GAINPUT )
     target_link_libraries( TFiOS "-framework AppKit" )
@@ -240,8 +253,11 @@ if( BUILD_LINUX )
     add_library( TFLinux STATIC
         ${THEFORGE_LINUX_FILES}
         ${THEFORGE_MATH_FILES}
+        ${THEFORGE_MEMORYTRACKING_FILES}
+        ${X11_LIBRARIES}
     )
     target_compile_definitions( TFLinux PRIVATE NO_GAINPUT )
+    target_link_libraries( TFLinux ${CMAKE_THREAD_LIBS_INIT} )
     install( TARGETS TFLinux DESTINATION lib )
 endif()
 
@@ -250,6 +266,7 @@ if( BUILD_MACOS )
     add_library( TFmacOS STATIC
         ${THEFORGE_MACOS_FILES}
         ${THEFORGE_MATH_FILES}
+        ${THEFORGE_MEMORYTRACKING_FILES}
     )
     target_compile_definitions( TFmacOS PRIVATE NO_GAINPUT )
     target_link_libraries( TFmacOS "-framework AppKit" )
@@ -261,6 +278,7 @@ if( BUILD_WINDOWS )
     add_library( TFWindows STATIC
         ${THEFORGE_WINDOWS_FILES}
         ${THEFORGE_MATH_FILES}
+        ${THEFORGE_MEMORYTRACKING_FILES}
     )
     target_compile_definitions( TFWindows PRIVATE NO_GAINPUT )
     install( TARGETS TFWindows DESTINATION lib )
@@ -331,6 +349,105 @@ if( BUILD_VULKAN )
         add_dependencies( TFVulkan ${THEFORGE_SPIRV_CROSS_LIBRARY} )
     endif()
     install( TARGETS TFVulkan DESTINATION lib )
+endif()
+
+# Examples
+macro( add_theforge_example THEFORGE_EXAMPLES_NAME THEFORGE_TARGET THEFORGE_BACKEND )
+    add_executable( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} src/Examples/${THEFORGE_EXAMPLES_NAME}/${THEFORGE_EXAMPLES_NAME}.cpp )
+    target_link_libraries( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} ${THEFORGE_EXAMPLES_DEPS} )
+    set_target_properties( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} PROPERTIES OUTPUT_NAME ${THEFORGE_EXAMPLES_NAME} )
+    add_dependencies( TF${THEFORGE_TARGET} TF${THEFORGE_BACKEND} TFCamera )
+    install( TARGETS ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/ )
+    install( DIRECTORY src/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/${THEFORGE_BACKEND}
+            DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/ )
+endmacro()
+
+if( BUILD_EXAMPLES )
+    set( THEFORGE_EXAMPLES_NAMES 01_Transformations )
+    install( DIRECTORY src/Examples/UnitTestResources
+            DESTINATION bin/Examples/ )
+    set( THEFORGE_CAMERA_FILES
+        src/Examples/Camera/FpsCameraController.cpp
+        src/Examples/Camera/GuiCameraController.cpp
+        src/Examples/Camera/Interfaces/ICameraController.h
+    )
+    add_library( TFCamera STATIC ${THEFORGE_CAMERA_FILES} )
+
+    foreach( THEFORGE_EXAMPLES_NAME ${THEFORGE_EXAMPLES_NAMES} )
+        install( DIRECTORY src/Examples/${THEFORGE_EXAMPLES_NAME}/GPUCfg
+                DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/ )
+
+        if( BUILD_ANDROID AND BUILD_VULKAN )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFVulkan
+                TFImage
+                TFAndroid
+                TFCamera
+                ${Vulkan_LIBRARIES}
+                ${THEFORGE_SPIRV_CROSS_LIBRARY}
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Android Vulkan )
+        endif()
+        if( BUILD_IOS AND BUILD_METAL )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFMetal
+                TFiOS
+                TFCamera
+                "-framework Metal"
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} iOS Metal )
+        endif()
+        if( BUILD_LINUX AND BUILD_VULKAN )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFVulkan
+                TFImage
+                TFLinux
+                TFCamera
+                ${Vulkan_LIBRARIES}
+                ${THEFORGE_SPIRV_CROSS_LIBRARY}
+                ${X11_LIBRARIES}
+                ${CMAKE_DL_LIBS}
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Linux Vulkan )
+        endif()
+        if( BUILD_MACOS AND BUILD_METAL )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFMetal
+                TFmacOS 
+                TFCamera
+                "-framework Metal"
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} macOS Metal )
+        endif()
+        if( BUILD_WINDOWS AND BUILD_DIRECT3D11 )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFDirect3D11
+                TFWindows 
+                TFCamera
+                ${D3D11_LIBRARIES}
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D11 )
+        endif()
+        if( BUILD_WINDOWS AND BUILD_DIRECT3D12 )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFDirect3D12
+                TFWindows
+                TFCamera
+                ${D3D12_LIBRARIES}
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D12 )
+        endif()
+        if( BUILD_WINDOWS AND BUILD_VULKAN )
+            set( THEFORGE_EXAMPLES_DEPS
+                TFVulkan
+                TFWindows
+                TFCamera
+                ${Vulkan_LIBRARIES} 
+                ${THEFORGE_SPIRV_CROSS_LIBRARY}
+            )
+            add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Vulkan )
+        endif()
+    endforeach()
 endif()
 
 install( FILES ${THEFORGE_PUBLIC_H_FILES}

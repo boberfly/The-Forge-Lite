@@ -356,7 +356,7 @@ macro( add_theforge_example THEFORGE_EXAMPLES_NAME THEFORGE_TARGET THEFORGE_BACK
     add_executable( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} src/Examples/${THEFORGE_EXAMPLES_NAME}/${THEFORGE_EXAMPLES_NAME}.cpp )
     target_link_libraries( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} ${THEFORGE_EXAMPLES_DEPS} )
     set_target_properties( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} PROPERTIES OUTPUT_NAME ${THEFORGE_EXAMPLES_NAME} )
-    add_dependencies( TF${THEFORGE_TARGET} TF${THEFORGE_BACKEND} TFCamera )
+    add_dependencies( TF${THEFORGE_TARGET} TF${THEFORGE_BACKEND} TFCamera TFInput )
     install( TARGETS ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/ )
     install( DIRECTORY src/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/${THEFORGE_BACKEND}
             DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/ )
@@ -373,6 +373,17 @@ if( BUILD_EXAMPLES )
     )
     add_library( TFCamera STATIC ${THEFORGE_CAMERA_FILES} )
 
+    option( GAINPUT_BUILD_SHARED "BUILD_SHARED" OFF )
+    add_subdirectory( third_party/gainput )
+    set( THEFORGE_INPUT_FILES
+        src/Examples/Input/InputSystem.cpp
+        src/Examples/Input/InputSystem.h
+        src/Examples/Input/InputMappings.h
+    )
+    add_library( TFInput STATIC ${THEFORGE_INPUT_FILES} )
+    target_link_libraries( TFInput gainputstatic )
+    add_dependencies( TFInput gainputstatic )
+
     foreach( THEFORGE_EXAMPLES_NAME ${THEFORGE_EXAMPLES_NAMES} )
         install( DIRECTORY src/Examples/${THEFORGE_EXAMPLES_NAME}/GPUCfg
                 DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/ )
@@ -383,6 +394,7 @@ if( BUILD_EXAMPLES )
                 TFImage
                 TFAndroid
                 TFCamera
+                TFInput
                 ${Vulkan_LIBRARIES}
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )
@@ -393,6 +405,7 @@ if( BUILD_EXAMPLES )
                 TFMetal
                 TFiOS
                 TFCamera
+                TFInput
                 "-framework Metal"
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} iOS Metal )
@@ -403,6 +416,7 @@ if( BUILD_EXAMPLES )
                 TFImage
                 TFLinux
                 TFCamera
+                TFInput
                 ${Vulkan_LIBRARIES}
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
                 ${X11_LIBRARIES}
@@ -415,6 +429,7 @@ if( BUILD_EXAMPLES )
                 TFMetal
                 TFmacOS 
                 TFCamera
+                TFInput
                 "-framework Metal"
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} macOS Metal )
@@ -424,6 +439,7 @@ if( BUILD_EXAMPLES )
                 TFDirect3D11
                 TFWindows 
                 TFCamera
+                TFInput
                 ${D3D11_LIBRARIES}
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D11 )
@@ -433,6 +449,7 @@ if( BUILD_EXAMPLES )
                 TFDirect3D12
                 TFWindows
                 TFCamera
+                TFInput
                 ${D3D12_LIBRARIES}
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D12 )
@@ -442,6 +459,7 @@ if( BUILD_EXAMPLES )
                 TFVulkan
                 TFWindows
                 TFCamera
+                TFInput
                 ${Vulkan_LIBRARIES} 
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )

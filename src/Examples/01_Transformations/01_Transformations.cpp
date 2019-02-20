@@ -41,8 +41,8 @@
 #include "Renderer/IRenderer.h"
 #include "Renderer/ResourceLoader.h"
 
-//#include "../../../../Middleware_3/Input/InputSystem.h"
-//#include "../../../../Middleware_3/Input/InputMappings.h"
+#include "Input/InputSystem.h"
+#include "Input/InputMappings.h"
 //Math
 #include "OS/Math/MathTypes.h"
 
@@ -102,9 +102,9 @@ Pipeline*      pSkyBoxDrawPipeline = NULL;
 RootSignature* pRootSignature = NULL;
 Sampler*       pSamplerSkyBox = NULL;
 Texture*       pSkyBoxTextures[6];
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//VirtualJoystickUI gVirtualJoystick;
-//#endif
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+VirtualJoystickUI gVirtualJoystick;
+#endif
 DepthState*      pDepth = NULL;
 RasterizerState* pSkyboxRast = NULL;
 RasterizerState* pSphereRast = NULL;
@@ -125,7 +125,7 @@ ICameraController* pCameraController = NULL;
 //UIApp gAppUI;
 
 FileSystem gFileSystem;
-#ifdef USE_LOGGING
+#if USE_LOGGING
 LogManager gLogManager;
 #endif
 
@@ -133,16 +133,16 @@ const char* pSkyBoxImageFileNames[] = { "Skybox_right1.png",  "Skybox_left2.png"
 										"Skybox_bottom4.png", "Skybox_front5.png", "Skybox_back6.png" };
 
 const char* pszBases[FSR_Count] = {
-	"",     // FSR_BinShaders
-	"",     // FSR_SrcShaders
+	"./",     // FSR_BinShaders
+	"./",     // FSR_SrcShaders
 	"../UnitTestResources/",          // FSR_Textures
 	"../UnitTestResources/",          // FSR_Meshes
 	"../UnitTestResources/",          // FSR_Builtin_Fonts
-	"",     // FSR_GpuConfig
+	"./",     // FSR_GpuConfig
 	"",                                     // FSR_Animation
 	"",                                     // FSR_OtherFiles
-//	"../../../../../Middleware_3/Text/",    // FSR_MIDDLEWARE_TEXT
-//	"../../../../../Middleware_3/UI/",      // FSR_MIDDLEWARE_UI
+	"",    // FSR_MIDDLEWARE_TEXT
+	"",      // FSR_MIDDLEWARE_UI
 };
 
 //TextDrawDesc gFrameTimeDraw = TextDrawDesc(0, 0xff00ffff, 18);
@@ -185,13 +185,13 @@ class Transformations: public IApp
 			addResource(&textureDesc, true);
 		}
 
-//#if defined(__ANDROID__) || defined(TARGET_IOS)
-//		if (!gVirtualJoystick.Init(pRenderer, "circlepad.png", FSR_Textures))
-//		{
-//			LOGERRORF("Could not initialize Virtual Joystick.");
-//			return false;
-//		}
-//#endif
+#if defined(__ANDROID__) || defined(TARGET_IOS)
+		if (!gVirtualJoystick.Init(pRenderer, "circlepad.png", FSR_Textures))
+		{
+			LOGERRORF("Could not initialize Virtual Joystick.");
+			return false;
+		}
+#endif
 
 		ShaderLoadDesc skyShader = {};
 		skyShader.mStages[0] = { "skybox.vert", NULL, 0, FSR_SrcShaders };
@@ -418,11 +418,11 @@ class Transformations: public IApp
 		requestMouseCapture(true);
 
 		pCameraController->setMotionParameters(cmp);
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//		gVirtualJoystick.InitLRSticks();
-//		pCameraController->setVirtualJoystick(&gVirtualJoystick);
-//#endif
-		//InputSystem::RegisterInputEvent(cameraInputEvent);
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+		gVirtualJoystick.InitLRSticks();
+		pCameraController->setVirtualJoystick(&gVirtualJoystick);
+#endif
+		InputSystem::RegisterInputEvent(cameraInputEvent);
 		return true;
 	}
 
@@ -432,9 +432,9 @@ class Transformations: public IApp
 
 		destroyCameraController(pCameraController);
 
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//		gVirtualJoystick.Exit();
-//#endif
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+		gVirtualJoystick.Exit();
+#endif
 
 		//gAppUI.Exit();
 
@@ -484,10 +484,10 @@ class Transformations: public IApp
 		//if (!gAppUI.Load(pSwapChain->ppSwapchainRenderTargets))
 		//	return false;
 
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//		if (!gVirtualJoystick.Load(pSwapChain->ppSwapchainRenderTargets[0], pDepthBuffer->mDesc.mFormat))
-//			return false;
-//#endif
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+		if (!gVirtualJoystick.Load(pSwapChain->ppSwapchainRenderTargets[0], pDepthBuffer->mDesc.mFormat))
+			return false;
+#endif
 
 		//layout and pipeline for sphere draw
 		VertexLayout vertexLayout = {};
@@ -541,9 +541,9 @@ class Transformations: public IApp
 
 		//gAppUI.Unload();
 
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//		gVirtualJoystick.Unload();
-//#endif
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+		gVirtualJoystick.Unload();
+#endif
 
 		removePipeline(pRenderer, pSkyBoxDrawPipeline);
 		removePipeline(pRenderer, pSpherePipeline);
@@ -557,10 +557,10 @@ class Transformations: public IApp
 		/************************************************************************/
 		// Input
 		/************************************************************************/
-		//if (getKeyDown(KEY_BUTTON_X))
-		//{
-		//	RecenterCameraView(170.0f);
-		//}
+		if (getKeyDown(KEY_BUTTON_X))
+		{
+			RecenterCameraView(170.0f);
+		}
 
 		pCameraController->update(deltaTime);
 		/************************************************************************/
@@ -692,9 +692,9 @@ class Transformations: public IApp
 		static HiresTimer gTimer;
 		gTimer.GetUSec(true);
 
-//#if defined(TARGET_IOS) || defined(__ANDROID__)
-//		gVirtualJoystick.Draw(cmd, { 1.0f, 1.0f, 1.0f, 1.0f });
-//#endif
+#if defined(TARGET_IOS) || defined(__ANDROID__)
+		gVirtualJoystick.Draw(cmd, { 1.0f, 1.0f, 1.0f, 1.0f });
+#endif
 
 		//gAppUI.DrawText(cmd, float2(8, 15), tinystl::string::format("CPU %f ms", gTimer.GetUSecAverage() / 1000.0f), &gFrameTimeDraw);
 		//gAppUI.Draw(cmd);

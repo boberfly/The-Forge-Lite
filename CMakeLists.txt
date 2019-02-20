@@ -60,7 +60,7 @@ include_directories(
 # Build Spirv-Cross from CMake
 if( BUILD_SPIRV_CROSS )
     option( SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS "Instead of throwing exceptions assert" ON )
-    add_subdirectory( third_party/SPIRV_Cross )
+    add_subdirectory( third_party/SPIRV_Cross EXCLUDE_FROM_ALL )
     set( THEFORGE_SPIRV_CROSS_LIBRARY spirv-cross-core )
 endif()
 
@@ -358,15 +358,15 @@ macro( add_theforge_example THEFORGE_EXAMPLES_NAME THEFORGE_TARGET THEFORGE_BACK
     target_link_libraries( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} ${THEFORGE_EXAMPLES_DEPS} )
     set_target_properties( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} PROPERTIES OUTPUT_NAME ${THEFORGE_EXAMPLES_NAME} )
     add_dependencies( TF${THEFORGE_TARGET} TF${THEFORGE_BACKEND} TFCamera TFInput )
-    install( TARGETS ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/ )
+    install( TARGETS ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME} )
     install( DIRECTORY src/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/${THEFORGE_BACKEND}
-            DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders/ )
+            DESTINATION bin/Examples/${THEFORGE_EXAMPLES_NAME}/Shaders )
 endmacro()
 
 if( BUILD_EXAMPLES )
     set( THEFORGE_EXAMPLES_NAMES 01_Transformations )
     install( DIRECTORY src/Examples/UnitTestResources
-            DESTINATION bin/Examples/ )
+            DESTINATION bin/Examples )
     set( THEFORGE_CAMERA_FILES
         src/Examples/Camera/FpsCameraController.cpp
         src/Examples/Camera/GuiCameraController.cpp
@@ -375,7 +375,7 @@ if( BUILD_EXAMPLES )
     add_library( TFCamera STATIC ${THEFORGE_CAMERA_FILES} )
 
     option( GAINPUT_BUILD_SHARED "BUILD_SHARED" OFF )
-    add_subdirectory( third_party/gainput )
+    add_subdirectory( third_party/gainput EXCLUDE_FROM_ALL )
     set( THEFORGE_INPUT_FILES
         src/Examples/Input/InputSystem.cpp
         src/Examples/Input/InputSystem.h

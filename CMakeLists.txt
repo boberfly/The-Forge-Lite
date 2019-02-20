@@ -354,6 +354,7 @@ endif()
 # Examples
 macro( add_theforge_example THEFORGE_EXAMPLES_NAME THEFORGE_TARGET THEFORGE_BACKEND )
     add_executable( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} src/Examples/${THEFORGE_EXAMPLES_NAME}/${THEFORGE_EXAMPLES_NAME}.cpp )
+    target_compile_definitions( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} PRIVATE ${THEFORGE_EXAMPLES_DEFINES} )
     target_link_libraries( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} ${THEFORGE_EXAMPLES_DEPS} )
     set_target_properties( ${THEFORGE_EXAMPLES_NAME}${THEFORGE_TARGET}${THEFORGE_BACKEND} PROPERTIES OUTPUT_NAME ${THEFORGE_EXAMPLES_NAME} )
     add_dependencies( TF${THEFORGE_TARGET} TF${THEFORGE_BACKEND} TFCamera TFInput )
@@ -398,6 +399,9 @@ if( BUILD_EXAMPLES )
                 ${Vulkan_LIBRARIES}
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )
+            set( THEFORGE_EXAMPLES_DEFINES
+                VULKAN
+            )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Android Vulkan )
         endif()
         if( BUILD_IOS AND BUILD_METAL )
@@ -407,6 +411,9 @@ if( BUILD_EXAMPLES )
                 TFCamera
                 TFInput
                 "-framework Metal"
+            )
+            set( THEFORGE_EXAMPLES_DEFINES
+                METAL
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} iOS Metal )
         endif()
@@ -422,6 +429,9 @@ if( BUILD_EXAMPLES )
                 ${X11_LIBRARIES}
                 ${CMAKE_DL_LIBS}
             )
+            set( THEFORGE_EXAMPLES_DEFINES
+                VULKAN
+            )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Linux Vulkan )
         endif()
         if( BUILD_MACOS AND BUILD_METAL )
@@ -431,6 +441,9 @@ if( BUILD_EXAMPLES )
                 TFCamera
                 TFInput
                 "-framework Metal"
+            )
+            set( THEFORGE_EXAMPLES_DEFINES
+                METAL
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} macOS Metal )
         endif()
@@ -442,6 +455,9 @@ if( BUILD_EXAMPLES )
                 TFInput
                 ${D3D11_LIBRARIES}
             )
+            set( THEFORGE_EXAMPLES_DEFINES
+                DIRECT3D11
+            )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D11 )
         endif()
         if( BUILD_WINDOWS AND BUILD_DIRECT3D12 )
@@ -451,6 +467,9 @@ if( BUILD_EXAMPLES )
                 TFCamera
                 TFInput
                 ${D3D12_LIBRARIES}
+            )
+            set( THEFORGE_EXAMPLES_DEFINES
+                DIRECT3D12
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Direct3D12 )
         endif()
@@ -462,6 +481,9 @@ if( BUILD_EXAMPLES )
                 TFInput
                 ${Vulkan_LIBRARIES} 
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
+            )
+            set( THEFORGE_EXAMPLES_DEFINES
+                VULKAN
             )
             add_theforge_example( ${THEFORGE_EXAMPLES_NAME} Windows Vulkan )
         endif()

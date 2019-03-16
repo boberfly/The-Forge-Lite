@@ -24,7 +24,7 @@
 
 #ifdef VULKAN
 
-#include "IRenderer.h"
+#include "Renderer/IRenderer.h"
 
 #include "SpirvTools/SpirvTools.h"
 #include "Interfaces/IMemoryManager.h"

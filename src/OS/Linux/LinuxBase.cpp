@@ -87,36 +87,6 @@ void requestShutdown()
 	XSendEvent(gWindow.display, gWindow.xlib_window, false, 0, &event);
 }
 
-bool getKeyDown(int key)
-{
-#ifndef NO_GAINPUT
-	return InputSystem::IsButtonPressed(key);
-#else
-	return false;
-#endif
-}
-
-bool getKeyUp(int key)
-{
-#ifndef NO_GAINPUT
-	return InputSystem::IsButtonReleased(key);
-#else
-	return false;
-#endif
-}
-
-bool getJoystickButtonDown(int button)
-{
-	ASSERT(0);    // We don't support joystick
-	return false;
-}
-
-bool getJoystickButtonUp(int button)
-{
-	ASSERT(0);    // We don't support joystick
-	return false;
-}
-
 /************************************************************************/
 // Time Related Functions
 /************************************************************************/
@@ -269,9 +239,8 @@ bool handleMessages(WindowsDesc* winDesc)
 #ifndef NO_GAINPUT
 	if (InputSystem::IsMouseCaptured())
 	{
-		ButtonData button = InputSystem::GetButtonData(KEY_UI_MOVE);
-		gCursorLastX = button.mValue[0];
-		gCursorLastY = button.mValue[1];
+		gCursorLastX = InputSystem::GetFloatInput(KEY_UI_MOVE, 0);
+		gCursorLastY = InputSystem::GetFloatInput(KEY_UI_MOVE, 1);
 		{
 			float x = 0;
 			float y = 0;
@@ -320,7 +289,7 @@ bool handleMessages(WindowsDesc* winDesc)
 
 	XFlush(winDesc->display);
 
-	if (InputSystem::IsButtonTriggered(KEY_CANCEL))
+	if (InputSystem::GetBoolInput(KEY_CANCEL_TRIGGERED))
 	{
 		if (!isCaptured)
 		{
@@ -334,7 +303,7 @@ bool handleMessages(WindowsDesc* winDesc)
 		}
 	}
 
-	if (InputSystem::IsButtonPressed(KEY_CONFIRM) && !PlatformEvents::skipMouseCapture && !isCaptured)
+	if (InputSystem::GetBoolInput(KEY_CONFIRM_PRESSED) && !PlatformEvents::skipMouseCapture && !isCaptured)
 	{
 		// Create invisible cursor that will be used when mouse is captured
 		Cursor      invisibleCursor;

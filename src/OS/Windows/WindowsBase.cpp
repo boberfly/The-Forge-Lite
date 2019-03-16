@@ -461,7 +461,7 @@ bool handleMessages()
 	}
 
 #ifndef NO_GAINPUT
-	if (InputSystem::IsButtonTriggered(UserInputKeys::KEY_CANCEL))
+	if (InputSystem::GetBoolInput(UserInputKeys::KEY_CANCEL_TRIGGERED))
 	{
 		if (!isCaptured)
 		{
@@ -474,7 +474,7 @@ bool handleMessages()
 		}
 	}
 
-	if (InputSystem::IsButtonTriggered(UserInputKeys::KEY_CONFIRM))
+	if (InputSystem::GetBoolInput(UserInputKeys::KEY_CONFIRM_TRIGGERED))
 	{
 		if (!InputSystem::IsMouseCaptured() && !PlatformEvents::skipMouseCapture)
 		{
@@ -485,8 +485,8 @@ bool handleMessages()
 		}
 	}
 
-	if (InputSystem::IsButtonTriggered(UserInputKeys::KEY_MENU) &&
-		(InputSystem::IsButtonPressed(UserInputKeys::KEY_LEFT_ALT) || InputSystem::IsButtonPressed(UserInputKeys::KEY_RIGHT_ALT)))
+	if (InputSystem::GetBoolInput(UserInputKeys::KEY_MENU_TRIGGERED) &&
+		(InputSystem::GetBoolInput(UserInputKeys::KEY_LEFT_ALT_PRESSED) || InputSystem::GetBoolInput(UserInputKeys::KEY_RIGHT_ALT_PRESSED)))
 	{
 		if (gHWNDMap.size() == 0)
 			return quit;
@@ -610,14 +610,14 @@ MonitorDesc* getMonitor(uint32_t index)
 
 float2 getDpiScale()
 {
-	HDC hdc = ::GetDC(nullptr);
+	HDC hdc = ::GetDC(NULL);
 	float2 ret = {};
 	const float dpi = 96.0f;
 	if (hdc)
 	{
 		ret.x = (UINT)(::GetDeviceCaps(hdc, LOGPIXELSX)) / dpi;
 		ret.y = static_cast<UINT>(::GetDeviceCaps(hdc, LOGPIXELSY)) / dpi;
-		::ReleaseDC(nullptr, hdc);
+		::ReleaseDC(NULL, hdc);
 	}
 	else
 	{
@@ -636,38 +636,6 @@ bool getResolutionSupport(const MonitorDesc* pMonitor, const Resolution* pRes)
 			return true;
 	}
 
-	return false;
-}
-
-float2 getMousePosition() { return float2(0, 0); }
-
-bool getKeyDown(int key)
-{
-#ifndef NO_GAINPUT
-	return InputSystem::IsButtonPressed(key);
-#else
-	return false;
-#endif
-}
-
-bool getKeyUp(int key)
-{
-#ifndef NO_GAINPUT
-	return InputSystem::IsButtonReleased(key);
-#else
-	return false;
-#endif
-}
-
-bool getJoystickButtonDown(int button)
-{
-	// TODO: Implement gamepad / joystick support on windows
-	return false;
-}
-
-bool getJoystickButtonUp(int button)
-{
-	// TODO: Implement gamepad / joystick support on windows
 	return false;
 }
 

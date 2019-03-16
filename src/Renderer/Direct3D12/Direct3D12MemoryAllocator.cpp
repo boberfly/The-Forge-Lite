@@ -24,7 +24,7 @@
 
 #if defined(DIRECT3D12)
 
-#include "IRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "Interfaces/ILogManager.h"
 
 #ifdef _DURANGO

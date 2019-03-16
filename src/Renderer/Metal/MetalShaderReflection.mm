@@ -24,7 +24,7 @@
 
 #ifdef METAL
 
-#include "IRenderer.h"
+#include "Renderer/IRenderer.h"
 #include "Interfaces/IMemoryManager.h"
 #include <string.h>
 

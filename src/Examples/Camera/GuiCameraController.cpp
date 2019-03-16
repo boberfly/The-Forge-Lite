@@ -87,20 +87,20 @@ void GuiCameraController::setMotionParameters(const CameraMotionParameters& cmp)
 bool GuiCameraController::onInputEvent(const ButtonData* pData)
 {
 	/*
-	if (InputSystem::IsButtonPressed(KEY_CONFIRM) && InputSystem::IsButtonPressed(KEY_RIGHT_BUMPER))
+	if (InputSystem::GetBoolInput(KEY_CONFIRM_PRESSED) && InputSystem::GetBoolInput(KEY_RIGHT_BUMPER_PRESSED))
 	{
 		vec3 move{ (float)-pData->mValue[0], (float)pData->mValue[1], 0 };
 		mat4 rot{ mat4::rotationYX(viewRotation.getY(), viewRotation.getX()) };
 		velocity = (rot * (move * maxSpeed * k_mouseTranslationScale)).getXYZ();
 	}
-	else if (InputSystem::IsButtonPressed(KEY_LEFT_STICK))
+	else if (InputSystem::GetBoolInput(KEY_LEFT_STICK_PRESSED))
 	{
 		vec3 move{ (float)pData->mValue[0], 0, (float)pData->mValue[1] };
 		mat4 rot{ mat4::rotationYX(viewRotation.getY(), viewRotation.getX()) };
 		//velocity = rotateV3(rot, move * maxSpeed * k_mouseTranslationScale);
 		velocity = (rot * (move * maxSpeed * k_mouseTranslationScale)).getXYZ();
 	}
-	else if (InputSystem::IsButtonPressed(KEY_RIGHT_STICK))
+	else if (InputSystem::GetBoolInput(KEY_RIGHT_STICK))
 	{
 		viewRotation += { pData->mValue[0] * k_rotationSpeed, pData->mValue[1] * k_rotationSpeed };
 	}

@@ -25,11 +25,12 @@ The Forge is a cross-platform rendering framework supporting
 
 Particularly, the graphics layer of The Forge supports cross-platform
 - Descriptor management
-- Multi-threaded resource loading
+- Multi-threaded and asynchronous resource loading
 - Shader reflection
 - Multi-threaded command buffer generation
 
 The Forge can be used to provide the rendering layer for custom next-gen game engines. It is also meant to provide building blocks to write your own game engine. It is like a "lego" set that allows you to use pieces to build a game engine quickly. The "lego" High-Level Features supported on all platforms are at the moment:
+- Asynchronous Resource loading with a resource loader task system as shown in 10_PixelProjectedReflections
 - [Lua Scripting System](https://www.lua.org/) - currently used in 06_Playground to load models and textures and animate the camera
 - Animation System based on [Ozz Animation System](https://github.com/guillaumeblanc/ozz-animation)
 - Consistent Math Library  based on an extended version of [Vectormath](https://github.com/glampert/vectormath)
@@ -39,7 +40,6 @@ The Forge can be used to provide the rendering layer for custom next-gen game en
 - Input system with Gestures for Touch devices based on an extended version of [gainput](https://github.com/jkuhlmann/gainput)
 - Very fast Entity Component System based on [ENTT](https://github.com/skypjack/entt)
 - UI system based on [imGui](https://github.com/ocornut/imgui) with a dedicated unit test extended for touch input devices
-- [Micro Profiler](https://github.com/zeux/microprofile)
 - Various implementations of high-end Graphics Effects as shown in the unit tests below
 
 Please find a link and credits for all open-source packages used at the end of this readme.
@@ -58,6 +58,43 @@ alt="Twitter" width="20" height="20" border="0" /> Join the channel at https://t
 * macOS [![Build Status](https://travis-ci.org/ConfettiFX/The-Forge.svg?branch=master)](https://travis-ci.org/ConfettiFX/The-Forge)
 
 # News
+
+## Release 1.25 - March 15th, 2019 - New Descriptor Memory Management System | Refactored Input System
+
+- The purpose of the DescriptorBinder approach is to allocate all memory descriptor space at load time, instead of doing it on-demand at runtime, as it is commonly done. This is done in an effort to allow applications to have better control over memory footprint overhead, which is especially important on mobile targets, and to improve performance by avoiding runtime memory allocations.
+The system will use shader reflection to determine the appropriate descriptor layouts in combination with descriptor update frequency knowledge. This knowledge will come from the client domain or from content editor tools.
+With this information, we are able to allocate all necessary descriptor memory up-front, giving more control to the application about the memory footprint. This is one of the initiatives leading up to the new version of The Forge.
+Read more [Descriptor Management](https://github.com/ConfettiFX/The-Forge/wiki/Descriptor-Management)
+
+- The input system was refactored and streamlined. This is mostly a rewrite of the code layer above [gainput](https://github.com/jkuhlmann/gainput).
+  - IOperatingSystem.h: getMousePosition, getKeyDown, getKeyUp, getJoystickButtonDown, getJoystickButtonUp were removed
+  - InputSystem.h: 
+    - KeyMappingDescription - changed now every axis should be defined as separate entry
+    - IsButtonPressed, IsButtonTriggered, IsButtonReleased, MapKey, SetActiveInputMap,  GetButtonData,  GetDisplayWidth, GetDisplayHeight, were removed
+    - New functions GetBoolInput, GetFloatInput. KeyMappingDescription  for new function require directly specifying intended action(released, pressed, triggered) via DEFINE_DEVICE_ACTION macro
+    - For InputEventHandler old style definition is used
+
+## Release 1.24 - March 1st, 2019 - Asynchronous Resource Loading | Micro Profiler
+- The Forge now allows to asynchronously load resources on all platforms. There are two ways to do this:
+  - use addResource/updateResource with boolean parameter called batch set to true, and later wait for completion with waitBatchCompleted (used in 01_Transformations, 03_MultiThread, 06_MaterialPlayground, 09_LightShadowPlayground, 09a_HybridRaytracing, 12_RendererRumtimeSwitch, 15_Transparency)
+  - use addResource with SyncToken parameter and check for completion with isTokenCompleted or wait for completion with waitTokenCompleted (used in 10_PixelProjectedReflections)
+addResource/updateResource with boolean parameter set to false are the old blocking versions.
+Let us know what you think of this system.
+- We integrated zeux's [Micro Profiler](https://github.com/zeux/microprofile) into The Forge. So far it supports DirectX 11, 12 and Vulkan. We are still working on Metal and Android support.
+
+Chrome
+![Micro Profiler in Chrome](Screenshots/MP_VISBUF.PNG)
+
+Visibility Buffer on PC Windows 10
+![Micro Profiler in Visibility Buffer](Screenshots/MP_INAPP_VIS.PNG)
+
+Linux Ubuntu
+![Micro Profiler Linux Ubuntu](Screenshots/Linux_Ubuntu_MicroProfiler.png)
+
+- Better integration of Ray Tracing into the renderer; still Vulkan RTX is work in progress
+- Fixed Vulkan instance extension bug: "InstanceLayers loop is wrong in CreateInstance" issue #92
+
+
 
 ## Release 1.23 - February 14th, 2019 - New Cross-Platform Ray Tracing Interface 
 Happy Valentines! Here is some love from The Forge team:
@@ -171,10 +208,9 @@ See the release notes from previous releases in the [Release section](https://gi
 
 1. Windows 10 RS5 with latest update for DXR support
 
-
 2. Drivers
 * AMD / NVIDIA - latest drivers 
-* Intel - need to install the latest driver (currently Version: 25.20.100.6326, October 9th, 2018) [Intel® Graphics Driver for Windows® 10](https://downloadcenter.intel.com/download/28240/Intel-Graphics-Driver-for-Windows-10?product=80939). As mentioned before this driver still doesn't have full DirectX 12 and Vulkan support.
+* Intel - we need to test this. Last time we looked the driver still didn't have full DirectX 12 and Vulkan support and the Visibility Buffer didn't run.
 
 
 3. Visual Studio 2017 with Windows SDK / DirectX version 17763.132 
@@ -182,14 +218,9 @@ https://developer.microsoft.com/en-us/windows/downloads/sdk-archive
 
 4. Vulkan [1.1.92.1](https://vulkan.lunarg.com/sdk/home)
 
-
-5. Ray Tracing 
- * DirectX Raytracing Experimental SDK v0.09.01
- * Windows 10 RS4 builds more info at [DXR](http://aka.ms/DXR)
-
-6. The Forge is currently tested on 
+5. The Forge is currently tested on 
 * AMD 5x, VEGA GPUs (various)
-* NVIDIA GeForce 9x, 10x GPUs (various)
+* NVIDIA GeForce 9x, 10x, 20x GPUs (various)
 * Intel Skull Canyon
 
 
@@ -219,7 +250,7 @@ To run the unit tests, The Forge requires an iOS device with an A9 or higher CPU
 
 We are currently testing on 
 * iPhone 7 (Model A1778)
-* iPad (Model A1803)
+* iPad (Model A1893)
 * iPhone Xs Max (Model MT5D2LL/A)
 
 
@@ -264,7 +295,6 @@ In the moment we only support the first two unit tests. We are waiting for devki
     It will only download and unzip required Art Assets (No plugins/extensions install). 
 
 # Unit Tests
-There are the following unit tests in The Forge:
 
 ## 1. Transformation
 
@@ -505,3 +535,4 @@ The Forge utilizes the following Open-Source libraries:
 * [Lua Scripting System](https://www.lua.org/)
 * [TressFX](https://github.com/GPUOpen-Effects/TressFX)
 * [Micro Profiler](https://github.com/zeux/microprofile)
+

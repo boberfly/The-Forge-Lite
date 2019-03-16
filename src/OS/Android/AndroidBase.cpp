@@ -67,22 +67,6 @@ void getRecommendedResolution(RectDesc* rect) { *rect = { 0, 0, 1920, 1080 }; }
 
 void requestShutdown() { LOGERROR("Cannot manually shutdown on Android"); }
 
-bool getKeyDown(int key) { return false; }
-
-bool getKeyUp(int key) { return false; }
-
-bool getJoystickButtonDown(int button)
-{
-	ASSERT(0);    // We don't support joystick
-	return false;
-}
-
-bool getJoystickButtonUp(int button)
-{
-	ASSERT(0);    // We don't support joystick
-	return false;
-}
-
 /************************************************************************/
 // Time Related Functions
 /************************************************************************/
@@ -283,7 +267,7 @@ int AndroidMain(void* param, IApp* app)
 		int                  events;
 		android_poll_source* source;
 
-		if (ALooper_pollAll(windowReady ? 1 : 0, nullptr, &events, (void**)&source) >= 0)
+		if (ALooper_pollAll(windowReady ? 1 : 0, NULL, &events, (void**)&source) >= 0)
 		{
 			if (source != NULL)
 				source->process(android_app, source);

@@ -3,6 +3,9 @@
 #pragma once
 #include "Input/InputSystem.h"
 
+static float k_joystickRotationSpeed = 0.01f;
+static float k_mouseRotationSpeed = 0.003f;
+
 enum UserInputKeys
 {
 	//if Mouse then
@@ -72,6 +75,55 @@ enum UserInputKeys
 	KEY_CHAR,
 
 	GESTURE_SWIPE_2,
+
+	// IMGUI navinput bindings
+	IMGUI_NAVINPUT_ACTIVATE,
+	IMGUI_NAVINPUT_CANCEL,
+	IMGUI_NAVINPUT_MENU,
+	IMGUI_NAVINPUT_INPUT,
+	IMGUI_NAVINPUT_DPADLEFT,
+	IMGUI_NAVINPUT_DPADRIGHT,
+	IMGUI_NAVINPUT_DPADUP,
+	IMGUI_NAVINPUT_DPADDOWN,
+	IMGUI_NAVINPUT_FOCUSNEXT,
+	IMGUI_NAVINPUT_FOCUSPREV,
+	IMGUI_NAVINPUT_TWEAKFAST,
+	IMGUI_NAVINPUT_TWEAKSLOW,
+
+	// Camera bindings
+	CAMERA_INPUT_MOVE,
+	CAMERA_INPUT_ROTATE,
+
+	VIRTUAL_JOYSTICK_TOUCH0,
+	VIRTUAL_JOYSTICK_TOUCH1,
+	
+	// Misc unit test bindings
+	KEY_BUTTON_X_TRIGGERED,
+	KEY_BUTTON_Y_TRIGGERED,
+	KEY_LEFT_TRIGGER_TRIGGERED,
+	KEY_RIGHT_TRIGGER_TRIGGERED,
+	KEY_LEFT_STICK_BUTTON_TRIGGERED,
+	KEY_RIGHT_STICK_BUTTON_TRIGGERED,
+	KEY_CONFIRM_TRIGGERED,
+	KEY_CONFIRM_PRESSED,
+	KEY_CANCEL_TRIGGERED,
+	KEY_MENU_TRIGGERED,
+	KEY_PAD_UP_PRESSED,
+	KEY_PAD_DOWN_PRESSED,
+	KEY_PAD_LEFT_PRESSED,
+	KEY_PAD_RIGHT_PRESSED,
+	KEY_LEFT_STICK_PRESSED,
+	KEY_RIGHT_STICK_PRESSED,
+	KEY_LEFT_BUMPER_PRESSED,
+	KEY_RIGHT_BUMPER_PRESSED,
+	KEY_LEFT_ALT_PRESSED,
+	KEY_RIGHT_ALT_PRESSED,
+	KEY_LEFT_CTRL_PRESSED,
+	KEY_RIGHT_CTRL_PRESSED,
+	KEY_LEFT_SHIFT_PRESSED,
+	KEY_RIGHT_SHIFT_PRESSED,
+	KEY_MOUSE_WHEEL_BUTTON_PRESSED,
+
 	KEY_COUNT
 };
 
@@ -79,162 +131,200 @@ enum UserInputKeys
 //this will unify iOS as joysticks are virtual and can be mapped to any finger.
 //TODO: Separate per device for simpler GetButtonData
 static KeyMappingDescription gUserKeys[] = {
+	// IMGUI mappings
+	{ IMGUI_NAVINPUT_ACTIVATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton0, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_ACTIVATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, DEFINE_DEVICE_ACTION(gainput::Touch0Down, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_CANCEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyEscape, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_MENU, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyQ, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_INPUT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyF, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADUP, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyUp, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADDOWN, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyDown, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADLEFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyLeft, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADRIGHT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyRight, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_FOCUSNEXT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyShiftL, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_FOCUSPREV, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton2, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_TWEAKFAST, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyShiftL, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_TWEAKSLOW, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton2, ACTION_PRESSED), 1.0f },
+
+	// Camera bindings
+	{ CAMERA_INPUT_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyD, ACTION_PRESSED), 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyA, ACTION_PRESSED), -1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyW, ACTION_PRESSED), 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyS, ACTION_PRESSED), -1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0X, 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0Y, 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1X, 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1Y, 1.0f },
+
+	{ CAMERA_INPUT_ROTATE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_RAW_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseAxisX, ACTION_DELTA_VALUE), k_mouseRotationSpeed },
+	{ CAMERA_INPUT_ROTATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_RAW_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseAxisY, ACTION_DELTA_VALUE), k_mouseRotationSpeed },
+	{ CAMERA_INPUT_ROTATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1X, 1.0f },
+	{ CAMERA_INPUT_ROTATE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1Y, 1.0f },
+	{ CAMERA_INPUT_ROTATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0X, 1.0f },
+	{ CAMERA_INPUT_ROTATE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0Y, 1.0f },
+
+	// Misc unit tests bindings
+	{ KEY_BUTTON_X_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyQ, ACTION_TRIGGERED), 1.0f },
+	{ KEY_BUTTON_Y_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyF, ACTION_TRIGGERED), 1.0f },
+	{ KEY_LEFT_TRIGGER_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeySpace, ACTION_TRIGGERED), 1.0f },
+	{ KEY_RIGHT_TRIGGER_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyE, ACTION_TRIGGERED), 1.0f },
+	{ KEY_LEFT_STICK_BUTTON_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyF1, ACTION_TRIGGERED), 1.0f },
+	{ KEY_RIGHT_STICK_BUTTON_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyBackSpace, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CONFIRM_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton0, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CONFIRM_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, DEFINE_DEVICE_ACTION(gainput::Touch0Down, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CANCEL_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyEscape, ACTION_TRIGGERED), 1.0f },
+	{ KEY_MENU_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyReturn, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CONFIRM_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton0, ACTION_PRESSED), 1.0f },
+	{ KEY_CONFIRM_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, DEFINE_DEVICE_ACTION(gainput::Touch0Down, ACTION_PRESSED), 1.0f },
+	{ KEY_PAD_UP_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyUp, ACTION_PRESSED), 1.0f },
+	{ KEY_PAD_DOWN_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyDown, ACTION_PRESSED), -1.0f },
+	{ KEY_PAD_LEFT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyLeft, ACTION_PRESSED), -1.0f },
+	{ KEY_PAD_RIGHT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyRight, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_SHIFT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyShiftL, ACTION_PRESSED), 1.0f },
+	{ KEY_RIGHT_SHIFT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyShiftR, ACTION_PRESSED), 1.0f },
+	{ KEY_RIGHT_CTRL_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyCtrlR, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_CTRL_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyCtrlL, ACTION_PRESSED), 1.0f },
+	{ KEY_RIGHT_ALT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyAltR, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_ALT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyAltL, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyD, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyA, ACTION_PRESSED), -1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyW, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, DEFINE_DEVICE_ACTION(gainput::KeyS, ACTION_PRESSED), -1.0f },
+	{ KEY_LEFT_BUMPER_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::KeyShiftL, ACTION_PRESSED), 1.0f },
+	{ KEY_RIGHT_BUMPER_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButton2, ACTION_PRESSED), 1.0f },
+	{ KEY_MOUSE_WHEEL_BUTTON_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, DEFINE_DEVICE_ACTION(gainput::MouseButtonMiddle, ACTION_PRESSED), 1.0f },
 
 	//Triggers
 	//Keyboard
-	{ KEY_LEFT_TRIGGER, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeySpace }, {}, {}, {} } },
-	{ KEY_RIGHT_TRIGGER, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyE }, {}, {}, {} } },
+	{ KEY_LEFT_TRIGGER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeySpace, 1.0f },
+	{ KEY_RIGHT_TRIGGER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyE, 1.0f },
 
 	//Bumbers
 	//Keyboard/Mouse
-	{ KEY_LEFT_BUMPER, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyShiftL }, {}, {}, {} } },
-	{ KEY_RIGHT_BUMPER, GainputDeviceType::GAINPUT_MOUSE, 1, { { INPUT_X_AXIS, 1, gainput::MouseButton2 }, {}, {}, {} } },
+	{ KEY_LEFT_BUMPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyShiftL, 1.0f },
+	{ KEY_RIGHT_BUMPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseButton2, 1.0f },
 
 	//STICKS
 	//Keyboard/Mouse
-	{ KEY_LEFT_STICK,
-	  GainputDeviceType::GAINPUT_KEYBOARD,
-	  4,
-	  { { INPUT_X_AXIS, 1, gainput::KeyD },
-		{ INPUT_X_AXIS, -1, gainput::KeyA },
-		{ INPUT_Y_AXIS, 1, gainput::KeyW },
-		{ INPUT_Y_AXIS, -1, gainput::KeyS } } },
+	{ KEY_LEFT_STICK, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyD, 1.0f },
+	{ KEY_LEFT_STICK, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyA, -1.0f },
+	{ KEY_LEFT_STICK, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyW, 1.0f },
+	{ KEY_LEFT_STICK, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyS, -1.0f },
 
-	{ KEY_UI_MOVE,
-	  GainputDeviceType::GAINPUT_MOUSE,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::MouseAxisX }, { INPUT_Y_AXIS, 1, gainput::MouseAxisY }, {}, {} } },
-	{ KEY_RIGHT_STICK,
-	  GainputDeviceType::GAINPUT_RAW_MOUSE,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::MouseAxisX }, { INPUT_Y_AXIS, 1, gainput::MouseAxisY }, {}, {} } },
+	{ KEY_UI_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseAxisX, 1.0f },
+	{ KEY_UI_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseAxisY, 1.0f },
+	{ KEY_RIGHT_STICK, INPUT_X_AXIS, GainputDeviceType::GAINPUT_RAW_MOUSE, gainput::MouseAxisX, 1.0f },
+	{ KEY_RIGHT_STICK, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_RAW_MOUSE, gainput::MouseAxisY, 1.0f },
 
 	//TOUCH
-	{ KEY_UI_MOVE,
-	  GainputDeviceType::GAINPUT_TOUCH,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::Touch0X }, { INPUT_Y_AXIS, 1, gainput::Touch0Y }, {}, {} } },
+	{ KEY_UI_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0X, 1.0f },
+	{ KEY_UI_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0Y, 1.0f },
 
-	{ KEY_RIGHT_STICK,
-	  GainputDeviceType::GAINPUT_TOUCH,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::Touch1X }, { INPUT_Y_AXIS, 1, gainput::Touch1Y }, {}, {} } },
-	{ KEY_RIGHT_STICK,
-	  GainputDeviceType::GAINPUT_TOUCH,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::Touch0X }, { INPUT_Y_AXIS, 1, gainput::Touch0Y }, {}, {} } },
-
-	{ KEY_LEFT_STICK,
-	  GainputDeviceType::GAINPUT_TOUCH,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::Touch0X }, { INPUT_Y_AXIS, 1, gainput::Touch0Y }, {}, {} } },
-	{ KEY_LEFT_STICK,
-	  GainputDeviceType::GAINPUT_TOUCH,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::Touch1X }, { INPUT_Y_AXIS, 1, gainput::Touch1Y }, {}, {} } },
+	{ VIRTUAL_JOYSTICK_TOUCH0, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0X, 1.0f },
+	{ VIRTUAL_JOYSTICK_TOUCH0, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0Y, 1.0f },
+	{ VIRTUAL_JOYSTICK_TOUCH1, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1X, 1.0f },
+	{ VIRTUAL_JOYSTICK_TOUCH1, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch1Y, 1.0f },
 
 	//PAD
 	//KEYBOARD
-	{ KEY_PAD_UP, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyUp }, {}, {}, {} } },
-	{ KEY_PAD_DOWN, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, -1, gainput::KeyDown }, {}, {}, {} } },
-	{ KEY_PAD_LEFT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, -1, gainput::KeyLeft }, {}, {}, {} } },
-	{ KEY_PAD_RIGHT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyRight }, {}, {}, {} } },
+	{ KEY_PAD_UP, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyUp, 1.0f },
+	{ KEY_PAD_DOWN, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyDown, -1.0f },
+	{ KEY_PAD_LEFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyLeft, -1.0f },
+	{ KEY_PAD_RIGHT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyRight, 1.0f },
 
 	//this will map to x y buttons
-	{ KEY_BUTTON_X, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyQ }, {}, {}, {} } },
-	{ KEY_BUTTON_Y, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyF }, {}, {}, {} } },
+	{ KEY_BUTTON_X, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyQ, 1.0f },
+	{ KEY_BUTTON_Y, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyF, 1.0f },
 
 	//this will map to L3 R3
-	{ KEY_LEFT_STICK_BUTTON, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyF1 }, {}, {}, {} } },
-	{ KEY_RIGHT_STICK_BUTTON, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyBackSpace }, {}, {}, {} } },
+	{ KEY_LEFT_STICK_BUTTON, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyF1, 1.0f },
+	{ KEY_RIGHT_STICK_BUTTON, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyBackSpace, 1.0f },
 
 	//CONFIRM
 	//MOUSE
-	{ KEY_CONFIRM, GainputDeviceType::GAINPUT_MOUSE, 1, { { INPUT_X_AXIS, 1, gainput::MouseButton0 }, {}, {}, {} } },
-	{ KEY_CONFIRM, GainputDeviceType::GAINPUT_TOUCH, 1, { { INPUT_X_AXIS, 1, gainput::Touch0Down }, {}, {}, {} } },
+	{ KEY_CONFIRM, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseButton0, 1.0f },
+	{ KEY_CONFIRM, INPUT_X_AXIS, GainputDeviceType::GAINPUT_TOUCH, gainput::Touch0Down, 1.0f },
 
 	//CANCEL
 	//Keyboard
-	{ KEY_CANCEL, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyEscape }, {}, {}, {} } },
+	{ KEY_CANCEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyEscape, 1.0f },
 
 	//MENU
 	//Keyboard
-	{ KEY_MENU, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyReturn }, {}, {}, {} } },
+	{ KEY_MENU, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyReturn, 1.0f },
 
 	//Mouse Wheel
-	{ KEY_MOUSE_WHEEL,
-	  GainputDeviceType::GAINPUT_MOUSE,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::MouseButtonWheelUp }, { INPUT_X_AXIS, -1, gainput::MouseButtonWheelDown }, {}, {} } },
-	{ KEY_MOUSE_WHEEL_BUTTON, GainputDeviceType::GAINPUT_MOUSE, 1, { { INPUT_X_AXIS, 1, gainput::MouseButtonMiddle }, {}, {}, {} } },
+	{ KEY_MOUSE_WHEEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseButtonWheelUp, 1.0f },
+	{ KEY_MOUSE_WHEEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseButtonWheelDown, -1.0f },
+	{ KEY_MOUSE_WHEEL_BUTTON, INPUT_X_AXIS, GainputDeviceType::GAINPUT_MOUSE, gainput::MouseButtonMiddle, 1.0f },
 
-	{ KEY_LEFT_SHIFT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyShiftL }, {}, {}, {} } },
-	{ KEY_RIGHT_SHIFT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyShiftR }, {}, {}, {} } },
-	{ KEY_RIGHT_CTRL, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyCtrlR }, {}, {}, {} } },
-	{ KEY_LEFT_CTRL, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyCtrlL }, {}, {}, {} } },
-	{ KEY_RIGHT_ALT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyAltR }, {}, {}, {} } },
-	{ KEY_LEFT_ALT, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyAltL }, {}, {}, {} } },
-	{ KEY_RIGHT_SUPER, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeySuperR }, {}, {}, {} } },
-	{ KEY_LEFT_SUPER, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeySuperL }, {}, {}, {} } },
-	{ KEY_DELETE, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyDelete }, {}, {}, {} } },
+	{ KEY_LEFT_SHIFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyShiftL, 1.0f },
+	{ KEY_RIGHT_SHIFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyShiftR, 1.0f },
+	{ KEY_RIGHT_CTRL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyCtrlR, 1.0f },
+	{ KEY_LEFT_CTRL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyCtrlL, 1.0f },
+	{ KEY_RIGHT_ALT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyAltR, 1.0f },
+	{ KEY_LEFT_ALT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyAltL, 1.0f },
+	{ KEY_RIGHT_SUPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeySuperR, 1.0f },
+	{ KEY_LEFT_SUPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeySuperL, 1.0f },
+	{ KEY_DELETE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyDelete, 1.0f },
 
 	//Keyboard chars
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyA }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyB }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyC }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyD }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyE }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyF }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyG }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyH }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyI }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyJ }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyK }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyL }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyM }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyN }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyO }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyP }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyQ }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyR }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyS }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyT }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyU }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyV }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyW }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyX }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyY }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyZ }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeySpace }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyComma }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyPeriod }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyApostrophe }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeySlash }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyBackslash }, {}, {}, {} } },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyA, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyB, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyC, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyD, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyE, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyF, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyG, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyH, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyI, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyJ, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyK, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyL, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyM, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyN, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyO, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyP, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyQ, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyR, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyS, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyT, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyU, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyV, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyW, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyX, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyY, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyZ, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeySpace, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyComma, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyPeriod, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyApostrophe, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeySlash, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyBackslash, 1.0f },
 
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpSubtract }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpInsert }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpEnd }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpDown }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpPageDown }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpLeft }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpBegin }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpRight }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpHome }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpUp }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyKpPageUp }, {}, {}, {} } },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpSubtract, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpInsert, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpEnd, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpDown, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpPageDown, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpBegin, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpLeft, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpRight, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpHome, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpUp, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyKpPageUp, 1.0f },
 
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::KeyMinus }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key0 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key1 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key2 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key3 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key4 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key5 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key6 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key7 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key8 }, {}, {}, {} } },
-	{ KEY_CHAR, GainputDeviceType::GAINPUT_KEYBOARD, 1, { { INPUT_X_AXIS, 1, gainput::Key9 }, {}, {}, {} } },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::KeyMinus, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key0, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key1, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key2, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key3, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key4, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key5, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key6, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key7, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key8, 1.0f },
+	{ KEY_CHAR, INPUT_X_AXIS, GainputDeviceType::GAINPUT_KEYBOARD, gainput::Key9, 1.0f },
 };
 
 static GestureMappingDescription gGestureMappings[] = {
@@ -245,53 +335,89 @@ static GestureMappingDescription gGestureMappings[] = {
 //this will unify iOS as joysticks are virtual and can be mapped to any finger.
 //TODO: Separate per device for simpler GetButtonData
 static KeyMappingDescription gXboxMappings[] = {
+	// IMGUI mappings
+	{ IMGUI_NAVINPUT_ACTIVATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonA, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_CANCEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonB, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_MENU, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonX, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_INPUT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonY, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADUP, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonUp, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADDOWN, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonDown, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADLEFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonLeft, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_DPADRIGHT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonRight, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_FOCUSNEXT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonL1, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_FOCUSPREV, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonR1, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_TWEAKFAST, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonL1, ACTION_PRESSED), 1.0f },
+	{ IMGUI_NAVINPUT_TWEAKSLOW, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonR1, ACTION_PRESSED), 1.0f },
+
+	// Camera bindings
+	{ CAMERA_INPUT_MOVE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickX, 1.0f },
+	{ CAMERA_INPUT_MOVE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickY, 1.0f },
+	{ CAMERA_INPUT_ROTATE, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonRightStickX, k_joystickRotationSpeed },
+	{ CAMERA_INPUT_ROTATE, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonRightStickY, -k_joystickRotationSpeed},
+
+	// Misc unit tests bindings
+	{ KEY_BUTTON_X_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonX, ACTION_TRIGGERED), 1.0f },
+	{ KEY_BUTTON_Y_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonY, ACTION_TRIGGERED), 1.0f },
+	{ KEY_LEFT_TRIGGER_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonAxis4, ACTION_TRIGGERED), 1.0f },
+	{ KEY_RIGHT_TRIGGER_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonAxis5, ACTION_TRIGGERED), 1.0f },
+	{ KEY_LEFT_STICK_BUTTON_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonL3, ACTION_TRIGGERED), 1.0f },
+	{ KEY_RIGHT_STICK_BUTTON_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonR3, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CONFIRM_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonA, ACTION_TRIGGERED), 1.0f },
+	{ KEY_CONFIRM_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonA, ACTION_PRESSED), 1.0f },
+	{ KEY_CANCEL_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonB, ACTION_TRIGGERED), 1.0f },
+	{ KEY_MENU_TRIGGERED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonStart, ACTION_TRIGGERED), 1.0f },
+	{ KEY_PAD_UP_PRESSED, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonUp, ACTION_PRESSED), 1.0f },
+	{ KEY_PAD_DOWN_PRESSED, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonDown, ACTION_PRESSED), -1.0f },
+	{ KEY_PAD_LEFT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonLeft, ACTION_PRESSED), -1.0f },
+	{ KEY_PAD_RIGHT_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonRight, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_BUMPER_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonL1, ACTION_PRESSED), 1.0f },
+	{ KEY_RIGHT_BUMPER_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, DEFINE_DEVICE_ACTION(gainput::PadButtonR1, ACTION_PRESSED), 1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickX, 1.0f },
+	{ KEY_LEFT_STICK_PRESSED, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickY, -1.0f },
+
 
 	//Triggers
 	//Keyboard
-	{ KEY_LEFT_TRIGGER, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonAxis4 }, {}, {}, {} } },
-	{ KEY_RIGHT_TRIGGER, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonAxis5 }, {}, {}, {} } },
+	{ KEY_LEFT_TRIGGER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonAxis4, 1.0f },
+	{ KEY_RIGHT_TRIGGER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonAxis5, 1.0f },
 
 	//Bumbers
 	//Keyboard/Mouse
-	{ KEY_LEFT_BUMPER, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonL1 }, {}, {}, {} } },
-	{ KEY_RIGHT_BUMPER, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonR1 }, {}, {}, {} } },
+	{ KEY_LEFT_BUMPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonL1, 1.0f },
+	{ KEY_RIGHT_BUMPER, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonR1, 1.0f },
 
 	//STICKS
 	//Keyboard/Mouse
-	{ KEY_LEFT_STICK,
-	  GainputDeviceType::GAINPUT_GAMEPAD,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::PadButtonLeftStickX }, { INPUT_Y_AXIS, 1, gainput::PadButtonLeftStickY }, {}, {} } },
-	{ KEY_RIGHT_STICK,
-	  GainputDeviceType::GAINPUT_GAMEPAD,
-	  2,
-	  { { INPUT_X_AXIS, 1, gainput::PadButtonRightStickX }, { INPUT_Y_AXIS, -1, gainput::PadButtonRightStickY }, {}, {} } },
+	{ KEY_LEFT_STICK, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickX, 1.0f },
+	{ KEY_LEFT_STICK, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeftStickY, -1.0f },
+	{ KEY_RIGHT_STICK, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonRightStickX, 1.0f },
+	{ KEY_RIGHT_STICK, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonRightStickY, -1.0f },
 
 	//DPAD
-	{ KEY_PAD_UP, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_Y_AXIS, 1, gainput::PadButtonUp }, {}, {}, {} } },
-	{ KEY_PAD_DOWN, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_Y_AXIS, -1, gainput::PadButtonDown }, {}, {}, {} } },
-	{ KEY_PAD_LEFT, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, -1, gainput::PadButtonLeft }, {}, {}, {} } },
-	{ KEY_PAD_RIGHT, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonRight }, {}, {}, {} } },
+	{ KEY_PAD_UP, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonUp, 1.0f },
+	{ KEY_PAD_DOWN, INPUT_Y_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonDown, -1.0f },
+	{ KEY_PAD_LEFT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonLeft, -1.0f },
+	{ KEY_PAD_RIGHT, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonRight, 1.0f },
 
 	//this will map to x y buttons
-	{ KEY_BUTTON_X, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonX }, {}, {}, {} } },
-	{ KEY_BUTTON_Y, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonY }, {}, {}, {} } },
+	{ KEY_BUTTON_X, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonX, 1.0f },
+	{ KEY_BUTTON_Y, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonY, 1.0f },
 
 	////this will map to L3 R3
-	{ KEY_LEFT_STICK_BUTTON, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonL3 }, {}, {}, {} } },
-	{ KEY_RIGHT_STICK_BUTTON, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonR3 }, {}, {}, {} } },
+	{ KEY_LEFT_STICK_BUTTON, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonL3, 1.0f },
+	{ KEY_RIGHT_STICK_BUTTON, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonR3, 1.0f },
 
 	//CONFIRM
 	//MOUSE
-	{ KEY_CONFIRM, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonA }, {}, {}, {} } },
+	{ KEY_CONFIRM, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonA, 1.0f },
 
 	//CANCEL
 	//Keyboard
-	{ KEY_CANCEL, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonB }, {}, {}, {} } },
+	{ KEY_CANCEL, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonB, 1.0f },
 
 	//MENU
 	//Keyboard
-	{ KEY_MENU, GainputDeviceType::GAINPUT_GAMEPAD, 1, { { INPUT_X_AXIS, 1, gainput::PadButtonStart }, {}, {}, {} } }
+	{ KEY_MENU, INPUT_X_AXIS, GainputDeviceType::GAINPUT_GAMEPAD, gainput::PadButtonStart, 1.0f },
 };
 
 #endif

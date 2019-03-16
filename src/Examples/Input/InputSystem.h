@@ -63,7 +63,8 @@ struct ButtonData
 		mIsPressed(false),
 		mIsTriggered(false),
 		mIsReleased(false),
-		mEventConsumed(false)
+		mEventConsumed(false),
+		mCharacter(L'\0')
 	{
 		mValue[0] = 0;
 		mValue[1] = 0;
@@ -126,37 +127,33 @@ enum InputAxis
 	INPUT_AXIS_COUNT
 };
 
-//Describes the InputAxis of the given device Button with a direction
-//Direction will mainly be used to map W-S  and A-D to positive and negative joystick movements
-struct TargetMapping
+enum ActionMask
 {
-	InputAxis mAxis;
-	int       mDirection;
-	uint32_t  mDeviceButtonId;
+	ACTION_ACTIVE_SHIFT = 30,
+	ACTION_DELTA_VALUE_SHIFT = 31,
+	ACTION_ACTIVE = (1 << ACTION_ACTIVE_SHIFT),
+	ACTION_DELTA_VALUE = (1 << ACTION_DELTA_VALUE_SHIFT),
+	ACTION_PRESSED = ACTION_ACTIVE,
+	ACTION_TRIGGERED = ACTION_ACTIVE | ACTION_DELTA_VALUE,
+	ACTION_RELEASED = ACTION_DELTA_VALUE,
+	DEVICE_BUTTON_MASK = 0xFFFF,
+	ACTION_MASK_MASK = ACTION_ACTIVE | ACTION_DELTA_VALUE,
 };
 
-//Describes all the device buttons for the given
-//user key and device type
+#define DEFINE_DEVICE_ACTION(key, actions) (((uint32_t)key)|((uint32_t)actions))
+//#define DEFINE_DEVICE_ACTION(device, key, actions) (((device)<<16)|(key)|(actions))
+//#define DEFINE_USER_INPUT(inputId, axis) (((inputId)<<4)|(axis))
+
+//Describes all the device buttons for the given user key and device type
 struct KeyMappingDescription
 {
-	uint32_t          mUserId;
+	uint32_t  mUserId;
+	InputAxis mAxis;
+
 	GainputDeviceType mDeviceType;
+	uint32_t          mDeviceAction;
 
-	//max of 2 axis (x,y)
-	uint32_t mAxisCount;
-
-	//max of 4 per button.
-	//KEyboard has 2 for axis
-	//Mouse has 1 per axis
-	//Gamepad has 1 per axis
-	//Touch has 1 per axis
-	TargetMapping mMappings[4];
-
-	//Callback function to translate
-	//input received to desired input format
-	//Converting raw mouse to -1,1
-	//Linking touch input to virtual joysticks
-	//InputCallbackFn pInputCallbackFn;
+	float mScale;
 };
 
 struct GestureMappingDescription
@@ -166,191 +163,101 @@ struct GestureMappingDescription
 	gainput::GestureConfig mConfig;
 };
 
-class InputSystem
+namespace InputSystem
 {
-	public:
-	static void Shutdown();
+#ifndef NO_GAINPUT
+	void Init(uint32_t width, uint32_t height);
+	void Shutdown();
 
-	static void Init(const uint32_t& width, const uint32_t& height);
 #ifdef METAL
 	/**
 	 ** Necessary for IOS otherwise we can't get touchInput
 	 ** Need to attach a gainput View as a subview to the MTKView
 	 ** MTKView is a subclass of UIView so we just need UIView.
 	 **/
-	static void InitSubView(void* view);
-	static void ShutdownSubView(void* view);
+	void InitSubView(void* view);
+	void ShutdownSubView(void* view);
 #endif
 
 #ifdef _WINDOWS
-	static void HandleMessage(MSG& msg) { pInputManager->HandleMessage(msg); }
+	void HandleMessage(MSG& msg);
 #elif defined __ANDROID__
-	static int32_t HandleMessage(AInputEvent* msg) { return pInputManager->HandleInput(msg); }
+	int32_t HandleMessage(AInputEvent* msg);
 #elif defined(__linux__)
-	static void HandleMessage(XEvent& msg) { pInputManager->HandleEvent(msg); }
+	void HandleMessage(XEvent& msg);
 #endif
+
+	typedef bool(*InputEventHandler)(const ButtonData* data);
+	void RegisterInputEvent(InputEventHandler callback, uint32_t priority = 0);
+	void UnregisterInputEvent(InputEventHandler callback);
+
 	//This will clear all active buttons.
 	//if deviceType == GAINPUT_DEFAULT then we clear all active buttons from all active devices
 	//if deviceType points to a specific deviceType then we clear all buttons related to that deviceType
-	static void ClearInputStates(GainputDeviceType deviceType = GainputDeviceType::GAINPUT_DEFAULT);
+	void ClearInputStates(GainputDeviceType deviceType = GainputDeviceType::GAINPUT_DEFAULT);
 	//Updates input system and broadcasts platform events
-	static void Update(float dt = 0.016f);
-	// Map from custom defined buttons to internal button mappings
-	static void MapKey(const uint32_t& source_KEY, const uint32_t& userKey, GainputDeviceType device);
-	// To switch between different key mappings.
-	static void SetActiveInputMap(const uint32_t& index);
+	void Update(float dt = 0.016f);
 	//Call when Window size changes
-	static void UpdateSize(const uint32_t& width, const uint32_t& height);
+	void UpdateSize(uint32_t width, uint32_t height);
 
-	/**
-	 ** True if user key is registered.
-	 ** param:  userKey -> Used defined ID for given button.
-	 ** userKey is defined in the KeyMappingDescription that's being used. (From InputMappings.h)
-	 **/
-	static bool IsButtonMapped(const uint32_t& userKey);
+	void WarpMouse(float x, float y);
+	bool IsMouseCaptured();
+	void SetMouseCapture(bool mouseCapture);
+	void SetHideMouseCursorWhileCaptured(bool hide);
+	bool GetHideMouseCursorWhileCaptured();
 
-	/**
-	 ** True if button is down.
-	 ** param: buttonId -> Used defined ID for given button.
-	 ** ID was defined when calling Map or using one of the defaults defined in Init
-	 **/
-	static bool IsButtonPressed(const uint32_t& buttonId);
-	/**
-	 ** True iff button was pressed this frame and was not pressed previous
-	 ** param: buttonId -> Used defined ID for given button.
-	 ** ID was defined when calling Map or using one of the defaults defined in Init
-	 **/
-	static bool IsButtonTriggered(const uint32_t& buttonId);
-	/**
-	 ** True iff button was released this frame
-	 ** param: buttonId -> Used defined ID for given button.
-	 ** ID was defined when calling Map or using one of the defaults defined in Init
-	 **/
-	static bool IsButtonReleased(const uint32_t& buttonId);
-
-	static bool IsMouseCaptured() { return mIsMouseCaptured; };
-
-	// returns whether or not the button is mapped and has valid data
-	// button data is saved in passed struct
-	static ButtonData GetButtonData(const uint32_t& buttonId, const GainputDeviceType& device = GainputDeviceType::GAINPUT_DEFAULT);
-
-	/**
-	 ** The id for touch determines which touch finger to retrieve.
-	 ** We'll get all the info for that finger
-	 ** param: buttonId -> Used defined ID for given button.
-	 ** ID was defined when calling Map or using one of the defaults defined in Init
-	 **/
-
-	static void SetMouseCapture(bool mouseCapture);
-
-	static void SetHideMouseCursorWhileCaptured(bool hide) { mHideMouseCursorWhileCaptured = hide; }
-	static bool GetHideMouseCursorWhileCaptured() { return mHideMouseCursorWhileCaptured; }
-
-	static uint32_t GetDisplayWidth();
-	static uint32_t GetDisplayHeight();
-
-	typedef bool (*InputEventHandler)(const ButtonData* data);
-	static void RegisterInputEvent(InputEventHandler callback, uint32_t priority = 0);
-	static void UnregisterInputEvent(InputEventHandler callback);
-	//helper function to reset mouse position when it goes to screen edge
-	static void WarpMouse(const float& x, const float& y);
-
-	static void ToggleVirtualTouchKeyboard(int enabled);
-	static bool IsVirtualKeyboardActive() { return mVirtualKeyboardActive; }
-	static void GetVirtualKeyboardTextInput(char* inputBuffer, uint32_t inputBufferSize);
+	void ToggleVirtualKeyboard(int enabled);
+	bool IsVirtualKeyboardActive();
+	void GetVirtualKeyboardTextInput(char* inputBuffer, uint32_t inputBufferSize);
 
 	//helper function to reduce code ducplication. Given an array of key mappings will add all keys to input map.
 	//This determines which device/Hardware keys are mapped to which user enums
-	static void AddMappings(KeyMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false);
+	void AddMappings(KeyMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false);
+	void AddGestureMappings(GestureMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false);
+	bool IsButtonMapped(uint32_t inputId);
+	bool GetBoolInput(uint32_t inputId);
+	float GetFloatInput(uint32_t inputId, uint32_t axis = 0);
+#else
+	void Init(uint32_t width, uint32_t height) {}
+	void Shutdown() {}
 
-	static void AddGestureMappings(GestureMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false);
-
-	private:
-	// callback broadcasters for platform events
-	// When a subscriber consumes an input the buttonData is modified to reflect it.
-	// buttonData.mEventConsumed becomes true.
-	static void OnInputEvent(ButtonData& buttonData);
-
-	//Event listener for when a button's state changes
-	//Will be triggered on event down, event up or event move.
-	class DeviceInputEventListener: public gainput::InputListener
-	{
-		public:
-		DeviceInputEventListener(int index): index_(index) {}
-
-		bool OnDeviceButtonBool(gainput::DeviceId deviceId, gainput::DeviceButtonId deviceButton, bool oldValue, bool newValue);
-
-		bool OnDeviceButtonFloat(gainput::DeviceId deviceId, gainput::DeviceButtonId deviceButton, float oldValue, float newValue);
-
-		bool OnDeviceButtonGesture(gainput::DeviceId deviceId, gainput::DeviceButtonId deviceButton, const gainput::GestureChange& gesture);
-
-		int GetPriority() const { return index_; }
-
-		private:
-		int index_;
-	};
-
-	static GainputDeviceType GetDeviceType(uint32_t deviceId);
-
-	//helper functions for default mappings
-	static void SetDefaultKeyMapping();
-
-	// gainput systems
-	static gainput::InputManager* pInputManager;
-
-	// we should have more than one map
-	static tinystl::vector<gainput::InputMap*> pInputMap;
-	static uint32_t                            mActiveInputMap;
-
-	//needed for macOS/iOS to retrieve touch data
 #ifdef METAL
-	static void* pGainputView;
+	void InitSubView(void* view) {}
+	void ShutdownSubView(void* view) {}
 #endif
 
-	static bool GatherInputEventButton(gainput::DeviceId deviceId, gainput::DeviceButtonId deviceButton, float oldValue, float newValue);
-	static void FillButtonDataFromDesc(
-		const KeyMappingDescription* keyDesc, ButtonData& toFill, float oldValue = 0.0, float newVallue = 0.0f,
-		gainput::DeviceId deviceId = gainput::InvalidDeviceId, gainput::DeviceButtonId deviceButton = gainput::InvalidDeviceButtonId);
-	static uint32_t GetDeviceID(GainputDeviceType deviceType);
+#ifdef _WINDOWS
+	void HandleMessage(MSG& msg) {}
+#elif defined __ANDROID__
+	int32_t HandleMessage(AInputEvent* msg) { return 0; }
+#elif defined(__linux__)
+	void HandleMessage(XEvent& msg) {}
+#endif
 
-	// What if we have more than one mouse, more than one keyboard
-	// more than one gamepad or more than one touch input (probably only valid for gamepads (2 players))
-	static gainput::DeviceId mMouseDeviceID;
-	static gainput::DeviceId mRawMouseDeviceID;
-	static gainput::DeviceId mKeyboardDeviceID;
-	static gainput::DeviceId mGamepadDeviceID;
-	static gainput::DeviceId mTouchDeviceID;
+	typedef bool(*InputEventHandler)(const ButtonData* data);
+	void RegisterInputEvent(InputEventHandler callback, uint32_t priority = 0) {}
+	void UnregisterInputEvent(InputEventHandler callback) {}
 
-	// Needed to send events
-	static gainput::DeviceButtonSpec mButtonsDown[32];
+	void ClearInputStates(GainputDeviceType deviceType = GainputDeviceType::GAINPUT_DEFAULT) {}
+	void Update(float dt = 0.016f) {}
+	void UpdateSize(uint32_t width, uint32_t height) {}
 
-	//For mouse capture
-	static bool mIsMouseCaptured;
-	static bool mHideMouseCursorWhileCaptured;
+	void WarpMouse(float x, float y) {}
+	bool IsMouseCaptured() { return false; }
+	void SetMouseCapture(bool mouseCapture) {}
+	void SetHideMouseCursorWhileCaptured(bool hide) {}
+	bool GetHideMouseCursorWhileCaptured() { return false; }
 
-	//for Input events
-	static tinystl::vector<InputEventHandler> mInputCallbacks;
-	static tinystl::vector<uint32_t>          mInputPriorities;
+	void ToggleVirtualKeyboard(int enabled) {}
+	bool IsVirtualKeyboardActive() { return false; }
+	void GetVirtualKeyboardTextInput(char* inputBuffer, uint32_t inputBufferSize) {}
 
-	//input listener to gainput mainly for triggers/releases, touch and mouse
-	static DeviceInputEventListener mDeviceInputListener;
-	//required to unregister the event listener
-	static gainput::ListenerId mDeviceInputListnerID;
-
-	static tinystl::unordered_map<uint32_t, tinystl::vector<KeyMappingDescription> >     mKeyMappings;
-	static tinystl::unordered_map<uint32_t, tinystl::vector<GestureMappingDescription> > mGestureMappings;
-
-	struct UserToDeviceMap
-	{
-		uint32_t          userMapping;
-		gainput::DeviceId deviceId;
-	};
-
-	//Map holding device to user mapping
-	//[device ID, vector of all user mapped ids]
-	static tinystl::unordered_map<uint32_t, tinystl::vector<UserToDeviceMap> > mDeviceToUserMappings;
-
-	static bool mVirtualKeyboardActive;
+	void  AddMappings(KeyMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false) {}
+	void  AddGestureMappings(GestureMappingDescription* mappings, uint32_t mappingCount, bool overrideMappings = false) {}
+	bool  IsButtonMapped(uint32_t inputId) { return false; }
+	bool  GetBoolInput(uint32_t inputId) { return false; }
+	float GetFloatInput(uint32_t inputId, uint32_t axis = 0) { return 0.0; }
+#endif
 };
 
 #endif

@@ -150,7 +150,15 @@ typedef struct ShaderLoadDesc
 
 typedef tfrg_atomic64_t SyncToken;
 
-void initResourceLoaderInterface(Renderer* pRenderer, uint64_t memoryBudget = DEFAULT_MEMORY_BUDGET, bool useThreads = false);
+typedef struct ResourceLoaderDesc
+{
+	uint64_t mBufferSize;
+	uint32_t mBufferCount;
+	uint32_t mTimesliceMs;
+} ResourceLoaderDesc;
+
+
+void initResourceLoaderInterface(Renderer* pRenderer, ResourceLoaderDesc* pDesc = nullptr);
 void removeResourceLoaderInterface(Renderer* pRenderer);
 
 void addResource(BufferLoadDesc* pBuffer, bool batch = false);

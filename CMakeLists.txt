@@ -22,6 +22,8 @@ option( USE_MEMORY_TRACKING "Use Memory Tracking" OFF )
 
 option( BUILD_EXAMPLES "Build Examples" OFF )
 
+option( INSTALL_TINYSTL "Install TinySTL" ON )
+
 # Dependencies
 option( BUILD_SPIRV_CROSS "Build SPIRV-Cross, needed for Vulkan reflection" ON )
 
@@ -498,3 +500,14 @@ install( FILES ${THEFORGE_INTERFACES_FILES}
 
 install( FILES ${THEFORGE_IMAGE_H_FILES}
         DESTINATION include/Renderer/Image )
+
+# Thirdparty
+if( BUILD_VULKAN )
+    install( FILES third_party/volk/volk.h
+             DESTINATION include/volk )
+endif()
+
+if( INSTALL_TINYSTL )
+    install( DIRECTORY third_party/TinySTL
+             DESTINATION include )
+endif()

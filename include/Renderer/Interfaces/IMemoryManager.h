@@ -38,6 +38,7 @@
 //--------------------------------------------------------------------------------------------
 
 #include <new>
+
 #ifdef USE_MEMORY_TRACKING
 #include "FluidStudios/MemoryManager/mmgr.h"
 
@@ -55,6 +56,7 @@ void  m_deallocator(void* ptr);
 #define conf_calloc(count, size) m_allocator(count, size)
 #define conf_realloc(ptr, size) m_reallocator(ptr, size)
 #define conf_free(ptr) m_deallocator(ptr)
+
 #endif
 
 #define malloc(size) static_assert(false, "Please use conf_malloc");

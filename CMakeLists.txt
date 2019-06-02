@@ -17,8 +17,8 @@ option( BUILD_DIRECT3D12 "Build Direct3D 12" OFF )
 option( BUILD_METAL "Build Metal" OFF )
 option( BUILD_VULKAN "Build Vulkan" OFF )
 
-option( USE_LOGGING "Use Logging" ON )
 option( USE_MEMORY_TRACKING "Use Memory Tracking" OFF )
+option( USE_PROFILER "Use Profiler" OFF )
 
 option( BUILD_EXAMPLES "Build Examples" OFF )
 
@@ -97,6 +97,7 @@ set( THEFORGE_CORE_FILES
     src/OS/Core/Atomics.h
     src/OS/Core/Compiler.h
     src/OS/Core/DLL.h
+    src/OS/Core/ThreadSystem.h
     src/OS/Core/FileSystem.cpp
     src/OS/Core/GPUConfig.h
     src/OS/Core/PlatformEvents.cpp
@@ -113,15 +114,12 @@ set( THEFORGE_IMAGE_FILES
     )
 
 # Logging
-if( USE_LOGGING )
-    add_definitions( -DUSE_LOGGING )
-    set( THEFORGE_LOGGING_FILES
-        src/OS/Logging/LogManager.cpp
-        src/OS/Logging/LogManager.h
-        )
-    install( FILES src/OS/Logging/LogManager.h
-            DESTINATION include/Renderer/Logging )
-endif()
+set( THEFORGE_LOGGING_FILES
+    src/OS/Logging/LogManager.cpp
+    src/OS/Logging/LogManager.h
+    )
+install( FILES src/OS/Logging/LogManager.h
+        DESTINATION include/Renderer/Logging )
 
 # Math
 set( THEFORGE_MATH_FILES
@@ -130,6 +128,7 @@ set( THEFORGE_MATH_FILES
 
 # Memory Tracking
 set( THEFORGE_MEMORYTRACKING_FILES
+    src/OS/MemoryTracking/NoMemoryDefines.h
     src/OS/MemoryTracking/MemoryTrackingManager.cpp
     )
 
@@ -227,6 +226,29 @@ add_library( TFImage STATIC
     )
 install( TARGETS TFImage DESTINATION lib )
 
+# Profiler
+if( USE_PROFILER )
+    add_definitions( -DPROFILE_ENABLED=1 )
+else()
+    add_definitions( -DPROFILE_ENABLED=0 )
+endif()
+
+set( THEFORGE_PROFILER_FILES 
+    src/Tools/Profiler/Profiler.h
+    src/Tools/Profiler/ProfilerBase.h
+    src/Tools/Profiler/ProfilerEnableMacro.h
+    src/Tools/Profiler/ProfilerHTML.h
+    src/Tools/Profiler/ProfilerInput.h
+    src/Tools/Profiler/ProfilerUI.h
+    src/Tools/Profiler/Profiler.cpp
+    src/Tools/Profiler/ProfilerBase.cpp
+    src/Tools/Profiler/ProfilerDirect3D11.cpp
+    src/Tools/Profiler/ProfilerDirect3D12.cpp
+    src/Tools/Profiler/ProfilerInput.cpp
+    src/Tools/Profiler/ProfilerUI.cpp
+    src/Tools/Profiler/ProfilerVulkan.cpp
+    )
+
 # Android library
 if( BUILD_ANDROID )
     add_library( TFAndroid STATIC
@@ -296,6 +318,7 @@ if( BUILD_DIRECT3D11 )
         ${THEFORGE_DIRECT3D11_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
+        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFDirect3D11 PRIVATE DIRECT3D11 )
     target_link_libraries( TFDirect3D12 ${D3D11_LIBRARIES} )
@@ -312,6 +335,7 @@ if( BUILD_DIRECT3D12 )
         ${THEFORGE_DIRECT3D12_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
+        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFDirect3D12 PRIVATE DIRECT3D12 )
     target_link_libraries( TFDirect3D12 ${D3D12_LIBRARIES} )
@@ -328,6 +352,7 @@ if( BUILD_METAL )
         ${THEFORGE_METAL_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
+        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFMetal PRIVATE METAL )
     target_link_libraries( TFMetal "-framework Metal" )
@@ -344,6 +369,7 @@ if( BUILD_VULKAN )
         ${THEFORGE_VULKAN_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
+        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFVulkan PRIVATE VULKAN )
     target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} ${THEFORGE_SPIRV_CROSS_LIBRARY} )

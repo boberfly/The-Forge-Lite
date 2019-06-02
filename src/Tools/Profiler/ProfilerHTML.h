@@ -1,10 +1,10 @@
 ///start file generated from microprofile.html
-#ifdef MICROPROFILE_EMBED_HTML
-const char g_MicroProfileHtml_begin_0[] =
+#ifdef PROFILE_EMBED_HTML
+const char g_ProfileHtml_begin_0[] =
 "<!DOCTYPE HTML>\n"
 "<html>\n"
 "<head>\n"
-"<title>MicroProfile Capture</title>\n"
+"<title>Profile Capture</title>\n"
 "<style>\n"
 "/* about css: http://bit.ly/1eMQ42U */\n"
 "body {margin: 0px;padding: 0px; font: 12px Courier New;background-color:#474747; color:white;overflow:hidden;}\n"
@@ -227,15 +227,15 @@ const char g_MicroProfileHtml_begin_0[] =
 "\n"
 "";
 
-const size_t g_MicroProfileHtml_begin_0_size = sizeof(g_MicroProfileHtml_begin_0);
-const char* g_MicroProfileHtml_begin[] = {
-&g_MicroProfileHtml_begin_0[0],
+const size_t g_ProfileHtml_begin_0_size = sizeof(g_ProfileHtml_begin_0);
+const char* g_ProfileHtml_begin[] = {
+&g_ProfileHtml_begin_0[0],
 };
-size_t g_MicroProfileHtml_begin_sizes[] = {
-sizeof(g_MicroProfileHtml_begin_0),
+size_t g_ProfileHtml_begin_sizes[] = {
+sizeof(g_ProfileHtml_begin_0),
 };
-size_t g_MicroProfileHtml_begin_count = 1;
-const char g_MicroProfileHtml_end_0[] =
+size_t g_ProfileHtml_begin_count = 1;
+const char g_ProfileHtml_end_0[] =
 "\n"
 "\n"
 "var CanvasDetailedView = document.getElementById(\'DetailedView\');\n"
@@ -1649,8 +1649,8 @@ const char g_MicroProfileHtml_end_0[] =
 "	{\n"
 "		context.fi";
 
-const size_t g_MicroProfileHtml_end_0_size = sizeof(g_MicroProfileHtml_end_0);
-const char g_MicroProfileHtml_end_1[] =
+const size_t g_ProfileHtml_end_0_size = sizeof(g_ProfileHtml_end_0);
+const char g_ProfileHtml_end_1[] =
 "llText(StringArray[i], XPos, YPos);\n"
 "		context.fillText(StringArray[i+1], XPosRight - WidthArray[i+1], YPos);\n"
 "		YPos += BoxHeight;\n"
@@ -2888,8 +2888,8 @@ const char g_MicroProfileHtml_end_1[] =
 "							if(W > MinWidth && X < nWidth && X+W > 0)\n"
 "		";
 
-const size_t g_MicroProfileHtml_end_1_size = sizeof(g_MicroProfileHtml_end_1);
-const char g_MicroProfileHtml_end_2[] =
+const size_t g_ProfileHtml_end_1_size = sizeof(g_ProfileHtml_end_1);
+const char g_ProfileHtml_end_2[] =
 "					{\n"
 "								if(bDrawEnabled || index == nHoverToken)\n"
 "								{\n"
@@ -4346,8 +4346,8 @@ const char g_MicroProfileHtml_end_2[] =
 "\n"
 "var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? \"DOMMouseScroll\" : \"mousewheel\" //FF doesn\'t recogniz";
 
-const size_t g_MicroProfileHtml_end_2_size = sizeof(g_MicroProfileHtml_end_2);
-const char g_MicroProfileHtml_end_3[] =
+const size_t g_ProfileHtml_end_2_size = sizeof(g_ProfileHtml_end_2);
+const char g_ProfileHtml_end_3[] =
 "e mousewheel as of FF3.x\n"
 "\n"
 "CanvasDetailedView.addEventListener(\'mousemove\', MouseMove, false);\n"
@@ -4841,20 +4841,20 @@ const char g_MicroProfileHtml_end_3[] =
 "</html>\n"
 "";
 
-const size_t g_MicroProfileHtml_end_3_size = sizeof(g_MicroProfileHtml_end_3);
-const char* g_MicroProfileHtml_end[] = {
-&g_MicroProfileHtml_end_0[0],
-&g_MicroProfileHtml_end_1[0],
-&g_MicroProfileHtml_end_2[0],
-&g_MicroProfileHtml_end_3[0],
+const size_t g_ProfileHtml_end_3_size = sizeof(g_ProfileHtml_end_3);
+const char* g_ProfileHtml_end[] = {
+&g_ProfileHtml_end_0[0],
+&g_ProfileHtml_end_1[0],
+&g_ProfileHtml_end_2[0],
+&g_ProfileHtml_end_3[0],
 };
-size_t g_MicroProfileHtml_end_sizes[] = {
-sizeof(g_MicroProfileHtml_end_0),
-sizeof(g_MicroProfileHtml_end_1),
-sizeof(g_MicroProfileHtml_end_2),
-sizeof(g_MicroProfileHtml_end_3),
+size_t g_ProfileHtml_end_sizes[] = {
+sizeof(g_ProfileHtml_end_0),
+sizeof(g_ProfileHtml_end_1),
+sizeof(g_ProfileHtml_end_2),
+sizeof(g_ProfileHtml_end_3),
 };
-size_t g_MicroProfileHtml_end_count = 4;
-#endif //MICROPROFILE_EMBED_HTML
+size_t g_ProfileHtml_end_count = 4;
+#endif //PROFILE_EMBED_HTML
 
 ///end file generated from  microprofile.html

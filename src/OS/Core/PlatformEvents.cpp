@@ -23,13 +23,16 @@
 */
 
 #include "Interfaces/IOperatingSystem.h"
-#include "TinySTL/vector.h"
+#include "EASTL/vector.h"
 
-static tinystl::vector<WindowResizeEventHandler> gWindowResizeCallbacks;
+static eastl::vector<WindowResizeEventHandler> gWindowResizeCallbacks;
 
 void registerWindowResizeEvent(WindowResizeEventHandler callback) { gWindowResizeCallbacks.push_back(callback); }
 
-void unregisterWindowResizeEvent(WindowResizeEventHandler callback) { gWindowResizeCallbacks.erase(gWindowResizeCallbacks.find(callback)); }
+void unregisterWindowResizeEvent(WindowResizeEventHandler callback)
+{
+	gWindowResizeCallbacks.erase(eastl::find(gWindowResizeCallbacks.begin(), gWindowResizeCallbacks.end(), callback));
+}
 
 namespace PlatformEvents {
 bool wantsMouseCapture = false;

@@ -39,8 +39,8 @@
 #include "Input/InputMappings.h"
 #endif
 
-#include "TinySTL/vector.h"
-#include "TinySTL/unordered_map.h"
+#include "EASTL/vector.h"
+#include "EASTL/unordered_map.h"
 
 #include "Interfaces/IOperatingSystem.h"
 #include "Interfaces/IPlatformEvents.h"
@@ -69,8 +69,8 @@ bool isCaptured = false;
 static bool		 gWindowClassInitialized = false;
 static WNDCLASSW	gWindowClass;
 
-static tinystl::vector<MonitorDesc>                gMonitors;
-static tinystl::unordered_map<void*, WindowsDesc*> gHWNDMap;
+static eastl::vector<MonitorDesc>                gMonitors;
+static eastl::unordered_map<void*, WindowsDesc*> gHWNDMap;
 
 void adjustWindow(WindowsDesc* winDesc);
 
@@ -85,7 +85,7 @@ static bool captureMouse(bool shouldCapture, bool shouldHide)
 {
 	if (shouldCapture != isCaptured)
 	{
-		WindowsDesc* currentWind = gHWNDMap.begin().node->second;
+		WindowsDesc* currentWind = gHWNDMap.begin()->second;
 		if (shouldCapture)
 		{
 			//TODO:Fix this once we have multiple window handles
@@ -129,9 +129,9 @@ static bool captureMouse(bool shouldCapture, bool shouldHide)
 				SetCursorPos(currentWind->lastCursorPosX, currentWind->lastCursorPosY);
 		}
 	}
-#ifndef NO_GAINPUT
+
 	InputSystem::SetMouseCapture(isCaptured);
-#endif
+
 	return true;
 }
 
@@ -139,8 +139,8 @@ static bool captureMouse(bool shouldCapture, bool shouldHide)
 LRESULT CALLBACK WinProc(HWND _hwnd, UINT _id, WPARAM wParam, LPARAM lParam)
 {
 	WindowsDesc* gCurrentWindow = NULL;
-	tinystl::unordered_hash_node<void*, WindowsDesc*>* pNode = gHWNDMap.find(_hwnd).node;
-	if (pNode)
+	decltype(gHWNDMap)::iterator pNode = gHWNDMap.find(_hwnd);
+	if (pNode != gHWNDMap.end())
 		gCurrentWindow = pNode->second;
 	else
 		return DefWindowProcW(_hwnd, _id, wParam, lParam);
@@ -286,7 +286,7 @@ static void collectMonitorInfo()
 		pMonitor->defaultResolution.mHeight = devMode.dmPelsHeight;
 		pMonitor->defaultResolution.mWidth = devMode.dmPelsWidth;
 
-		tinystl::vector<Resolution> displays;
+		eastl::vector<Resolution> displays;
 		DWORD current = 0;
 		while (EnumDisplaySettingsW(pMonitor->adapterName, current++, &devMode))
 		{
@@ -369,7 +369,7 @@ class StaticWindowManager
 					size_t size = FormatMessageA(
 						FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errorMessageID,
 						MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
-					tinystl::string message(messageBuffer, size);
+					eastl::string message(messageBuffer, size);
 					ErrorMsg(message.c_str());
 					return;
 				}
@@ -420,7 +420,7 @@ void openWindow(const char* app_name, WindowsDesc* winDesc)
 		winDesc->windowedRect = { (int)clientRect.left, (int)clientRect.top, (int)clientRect.right, (int)clientRect.bottom };
 
 		winDesc->handle = hwnd;
-		gHWNDMap.insert({ hwnd, winDesc });
+		gHWNDMap[hwnd] = winDesc;
 
 		if (winDesc->visible)
 		{
@@ -497,7 +497,7 @@ bool handleMessages()
 			return quit;
 
 		//TODO:Fix this once we have multiple window handles
-		WindowsDesc* currentWind = gHWNDMap.begin().node->second;
+		WindowsDesc* currentWind = gHWNDMap.begin()->second;
 
 		if (currentWind)
 			toggleFullscreen(currentWind);

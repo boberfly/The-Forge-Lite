@@ -29,8 +29,8 @@
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
 
-#include "TinySTL/vector.h"
-#include "TinySTL/unordered_map.h"
+#include "EASTL/vector.h"
+#include "EASTL/unordered_map.h"
 
 #include "Interfaces/IOperatingSystem.h"
 #include "Interfaces/IPlatformEvents.h"
@@ -62,8 +62,8 @@ static bool gWindowClassInitialized = false;
 
 static int gCursorLastX = 0, gCursorLastY = 0;
 
-static tinystl::vector<MonitorDesc>                gMonitors;
-static tinystl::unordered_map<void*, WindowsDesc*> gHWNDMap;
+static eastl::vector<MonitorDesc>                gMonitors;
+static eastl::unordered_map<void*, WindowsDesc*> gHWNDMap;
 static WindowsDesc                                 gWindow;
 static float                                       gRetinaScale = 1.0f;
 

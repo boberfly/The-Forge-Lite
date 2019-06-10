@@ -25,8 +25,9 @@
  */
 
 #pragma once
-#include "TinySTL/unordered_map.h"
-#include "TinySTL/vector.h"
+
+#include "EASTL/unordered_map.h"
+#include "EASTL/vector.h"
 
 #include "gainput/lib/include/gainput/gainput.h"
 #ifdef METAL

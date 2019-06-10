@@ -34,7 +34,7 @@ The Forge can be used to provide the rendering layer for custom next-gen game en
 - [Lua Scripting System](https://www.lua.org/) - currently used in 06_Playground to load models and textures and animate the camera
 - Animation System based on [Ozz Animation System](https://github.com/guillaumeblanc/ozz-animation)
 - Consistent Math Library  based on an extended version of [Vectormath](https://github.com/glampert/vectormath)
-- Extended version of [TinySTL](https://github.com/mendsley/tinystl)
+- Extended version of [EASTL](https://github.com/electronicarts/EASTL/)
 - For loading art assets we have a modified and integrated version of [Assimp](https://github.com/assimp/assimp)
 - Consistent Memory Managament: on GPU following [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
 - Input system with Gestures for Touch devices based on an extended version of [gainput](https://github.com/jkuhlmann/gainput)
@@ -54,6 +54,18 @@ alt="Twitter" width="20" height="20" border="0" /> Join the channel at https://t
 * macOS [![Build Status](https://travis-ci.org/ConfettiFX/The-Forge.svg?branch=master)](https://travis-ci.org/ConfettiFX/The-Forge)
 
 # News
+
+
+## Release 1.29 - June 6th, 2019 - EASTL Integration | Micro-profiler improvements | Neon intrinsic Support
+ * We replaced for all platforms TinySTL with [EASTL](https://github.com/electronicarts/EASTL/) for support of additional data structures and functionality. This was a major change and we still expect a few bugs to appear.
+ * ARM based platforms (iOS/Android) can pick a new NEON intrinsics code path in our math library
+ * Microprofiler  
+   * Multithreaded GPU Profiling is now supported
+   * Microprofiler is now enabled on all the Unit-tests and togglable using UI checkbox.
+   * Added new common interface, IProfiler.h
+ * Issue list: 
+   * #105 - 04_ExecuteIndirect crash on macOS
+
 
 ## Release 1.28 - May 24th, 2019 - SWB Level Editor | Micro Profiler Re-Write | Log and File System improvements | better macOS/iOS support 
 We added a new section below the Examples to show screenshots and an explanation of some of the Tools that we integrated. We will fill this up over the next few releases.
@@ -128,23 +140,6 @@ There is also a Help menu item.
   * #112 - cmdBindDescriptors performance issue (DX12)
   * #110 - RenderDoc compatibility with SM6+
 
-## Release 1.27 - April 25th, 2019 - Spring House Cleaning Release :-)
-* DirectX
-  * Improved our support for DXGI_FORMAT_BC6H_SF16, DXGI_FORMAT_BC7_UNORM 
-  * DirectX12 removed CPU wait on GPU only fences.
-* Windows - header include cleanup, resolved conflict with CALLTYPE enum in objidl.h
-* macOS / iOS - utilize packed_* data types more in shaders
-* Replaced some usages of GPURingBuffer with API Buffers, for reduced dependencies
-* Unit tests fixes
-  * Fixed sky frag shaders in all unit tests
-  * Fixed unit test debug vk crash from validation layer with AMD gpu (Vulkan SDK 1.1.101)
-* UI fixes + improvements
-  * Added an example of how to use the texture previewer widget in the ui unit test (13_UserInterface)
-  * App can now control the UI descriptor binder update freq
-* Improved ThreadedTask system and added helper texture loading code that uses the new async loading system in 06_MaterialPlayground and Visibility Buffer
-* Fixed issue #100 "About FBX resource import?"
-
-
 See the release notes from previous releases in the [Release section](https://github.com/ConfettiFX/The-Forge/releases).
 
   
@@ -210,7 +205,8 @@ We are currently testing on
 
 3. Workspace file is provided for [codelite 12.0.6](https://codelite.org/)
 
-4. Vulkan SDK Version: download the native Ubuntu Linux package for all the elements of the Vulkan SDK [LunarG Vulkan SDK Packages for Ubuntu 16.04 and 18.04](https://packages.lunarg.com/)
+4. Vulkan SDK Version 1.1.101: download the native Ubuntu Linux package for all the elements of the Vulkan SDK [LunarG Vulkan SDK Packages for Ubuntu 16.04 and 18.04](https://packages.lunarg.com/)
+
 
 5. The Forge is currently tested on Ubuntu with the following GPUs:
  * AMD RADEON RX 480
@@ -520,7 +516,6 @@ The Forge utilizes the following Open-Source libraries:
 * [shaderc](https://github.com/google/shaderc)
 * [SPIRV_Cross](https://github.com/KhronosGroup/SPIRV-Cross)
 * [TinyEXR](https://github.com/syoyo/tinyexr)
-* [TinySTL](https://github.com/mendsley/tinystl)
 * [Vulkan Memory Allocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator)
 * [GeometryFX](https://gpuopen.com/gaming-product/geometryfx/)
 * [WinPixEventRuntime](https://blogs.msdn.microsoft.com/pix/winpixeventruntime/)
@@ -536,4 +531,5 @@ The Forge utilizes the following Open-Source libraries:
 * [TressFX](https://github.com/GPUOpen-Effects/TressFX)
 * [Micro Profiler](https://github.com/zeux/microprofile)
 * [MTuner](https://github.com/milostosic/MTuner) 
+* [EASTL](https://github.com/electronicarts/EASTL/)
 

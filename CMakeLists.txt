@@ -2,6 +2,8 @@ cmake_minimum_required( VERSION 3.0 )
 
 project( The-Forge-Lite )
 
+set(CMAKE_CXX_STANDARD 14)
+
 list(APPEND CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/cmake/modules"
 )
@@ -20,9 +22,12 @@ option( BUILD_VULKAN "Build Vulkan" OFF )
 option( USE_MEMORY_TRACKING "Use Memory Tracking" OFF )
 option( USE_PROFILER "Use Profiler" OFF )
 
+option( BUILD_MIDDLEWARE_UI "Build Middleware UI" OFF )
+option( BUILD_MIDDLEWARE_TEXT "Build Middleware Text" OFF )
+
 option( BUILD_EXAMPLES "Build Examples" OFF )
 
-option( INSTALL_TINYSTL "Install TinySTL" ON )
+option( INSTALL_EASTL "Install EASTL" ON )
 
 # Dependencies
 option( BUILD_SPIRV_CROSS "Build SPIRV-Cross, needed for Vulkan reflection" ON )
@@ -83,6 +88,7 @@ set( THEFORGE_INTERFACES_FILES
     include/Renderer/Interfaces/IMiddleware.h
     include/Renderer/Interfaces/IOperatingSystem.h
     include/Renderer/Interfaces/IPlatformEvents.h
+    include/Renderer/Interfaces/IProfiler.h
     include/Renderer/Interfaces/IThread.h
     include/Renderer/Interfaces/ITimeManager.h
 )
@@ -91,6 +97,23 @@ set( THEFORGE_IMAGE_H_FILES
     include/Renderer/Image/Image.h
     include/Renderer/Image/ImageEnums.h
 )
+
+# EASTL
+set( THEFORGE_EASTL_FILES
+    third_party/EASTL/EAStdC/EASprintf.cpp
+    third_party/EASTL/EAStdC/EAMemory.cpp
+    third_party/EASTL/thread_support.cpp
+    third_party/EASTL/string.cpp
+    third_party/EASTL/red_black_tree.cpp
+    third_party/EASTL/numeric_limits.cpp
+    third_party/EASTL/intrusive_list.cpp
+    third_party/EASTL/hashtable.cpp
+    third_party/EASTL/fixed_pool.cpp
+    third_party/EASTL/assert.cpp
+    third_party/EASTL/allocator_forge.cpp
+    third_party/EASTL/allocator_eastl.cpp
+    )
+add_library( EASTL STATIC ${THEFORGE_EASTL_FILES} )
 
 # Core
 set( THEFORGE_CORE_FILES
@@ -226,28 +249,21 @@ add_library( TFImage STATIC
     )
 install( TARGETS TFImage DESTINATION lib )
 
+if( BUILD_EXAMPLES )
+    set( BUILD_MIDDLEWARE_UI ON )
+endif()
+
 # Profiler
 if( USE_PROFILER )
     add_definitions( -DPROFILE_ENABLED=1 )
+    set( BUILD_MIDDLEWARE_UI ON )
 else()
     add_definitions( -DPROFILE_ENABLED=0 )
 endif()
 
-set( THEFORGE_PROFILER_FILES 
-    src/Tools/Profiler/Profiler.h
-    src/Tools/Profiler/ProfilerBase.h
-    src/Tools/Profiler/ProfilerEnableMacro.h
-    src/Tools/Profiler/ProfilerHTML.h
-    src/Tools/Profiler/ProfilerInput.h
-    src/Tools/Profiler/ProfilerUI.h
-    src/Tools/Profiler/Profiler.cpp
-    src/Tools/Profiler/ProfilerBase.cpp
-    src/Tools/Profiler/ProfilerDirect3D11.cpp
-    src/Tools/Profiler/ProfilerDirect3D12.cpp
-    src/Tools/Profiler/ProfilerInput.cpp
-    src/Tools/Profiler/ProfilerUI.cpp
-    src/Tools/Profiler/ProfilerVulkan.cpp
-    )
+if( BUILD_MIDDLEWARE_UI )
+    set( BUILD_MIDDLEWARE_TEXT ON )
+endif()
 
 # Android library
 if( BUILD_ANDROID )
@@ -256,7 +272,8 @@ if( BUILD_ANDROID )
         ${THEFORGE_MATH_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
     )
-    target_compile_definitions( TFAndroid PRIVATE NO_GAINPUT )
+    #target_compile_definitions( TFAndroid PRIVATE NO_GAINPUT )
+    target_link_libraries( TFAndroid EASTL )
     install( TARGETS TFAndroid DESTINATION lib )
 endif()
 
@@ -267,8 +284,8 @@ if( BUILD_IOS )
         ${THEFORGE_MATH_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
     )
-    target_compile_definitions( TFiOS PRIVATE NO_GAINPUT )
-    target_link_libraries( TFiOS "-framework AppKit" )
+    #target_compile_definitions( TFiOS PRIVATE NO_GAINPUT )
+    target_link_libraries( TFiOS "-framework AppKit" EASTL )
     install( TARGETS TFiOS DESTINATION lib )
 endif()
 
@@ -280,8 +297,8 @@ if( BUILD_LINUX )
         ${THEFORGE_MEMORYTRACKING_FILES}
         ${X11_LIBRARIES}
     )
-    target_compile_definitions( TFLinux PRIVATE NO_GAINPUT )
-    target_link_libraries( TFLinux ${CMAKE_THREAD_LIBS_INIT} )
+    #target_compile_definitions( TFLinux PRIVATE NO_GAINPUT )
+    target_link_libraries( TFLinux ${CMAKE_THREAD_LIBS_INIT} EASTL )
     install( TARGETS TFLinux DESTINATION lib )
 endif()
 
@@ -292,8 +309,8 @@ if( BUILD_MACOS )
         ${THEFORGE_MATH_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
     )
-    target_compile_definitions( TFmacOS PRIVATE NO_GAINPUT )
-    target_link_libraries( TFmacOS "-framework AppKit" )
+    #target_compile_definitions( TFmacOS PRIVATE NO_GAINPUT )
+    target_link_libraries( TFmacOS "-framework AppKit" EASTL )
     install( TARGETS TFmacOS DESTINATION lib )
 endif()
 
@@ -304,7 +321,8 @@ if( BUILD_WINDOWS )
         ${THEFORGE_MATH_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
     )
-    target_compile_definitions( TFWindows PRIVATE NO_GAINPUT )
+    #target_compile_definitions( TFWindows PRIVATE NO_GAINPUT )
+    target_link_libraries( TFWindows EASTL )
     install( TARGETS TFWindows DESTINATION lib )
 endif()
 
@@ -318,7 +336,6 @@ if( BUILD_DIRECT3D11 )
         ${THEFORGE_DIRECT3D11_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
-        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFDirect3D11 PRIVATE DIRECT3D11 )
     target_link_libraries( TFDirect3D12 ${D3D11_LIBRARIES} )
@@ -335,7 +352,6 @@ if( BUILD_DIRECT3D12 )
         ${THEFORGE_DIRECT3D12_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
-        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFDirect3D12 PRIVATE DIRECT3D12 )
     target_link_libraries( TFDirect3D12 ${D3D12_LIBRARIES} )
@@ -352,7 +368,6 @@ if( BUILD_METAL )
         ${THEFORGE_METAL_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
-        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFMetal PRIVATE METAL )
     target_link_libraries( TFMetal "-framework Metal" )
@@ -369,7 +384,6 @@ if( BUILD_VULKAN )
         ${THEFORGE_VULKAN_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
-        ${THEFORGE_PROFILER_FILES}
         )
     target_compile_definitions( TFVulkan PRIVATE VULKAN )
     target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} ${THEFORGE_SPIRV_CROSS_LIBRARY} )
@@ -377,6 +391,119 @@ if( BUILD_VULKAN )
         add_dependencies( TFVulkan ${THEFORGE_SPIRV_CROSS_LIBRARY} )
     endif()
     install( TARGETS TFVulkan DESTINATION lib )
+endif()
+
+# Middleware
+set( THEFORGE_MIDDLEWARE_Text_FILES
+    src/Middleware/Text/Fontstash.h
+    src/Middleware/Text/Fontstash.cpp
+    )
+
+set( THEFORGE_MIDDLEWARE_UI_FILES
+    include/Renderer/Interfaces/IProfiler.h
+    src/Middleware/UI/AppUI.h
+    src/Middleware/UI/imgui_user.h
+    src/Middleware/UI/AppUI.cpp
+    src/Middleware/UI/imgui_user.cpp
+    src/Middleware/UI/ImguiGUIDriver.cpp
+    third_party/imgui/imconfig.h
+    third_party/imgui/imgui_internal.h
+    third_party/imgui/imgui.h
+    third_party/imgui/imgui_demo.cpp
+    third_party/imgui/imgui_draw.cpp
+    third_party/imgui/imgui_widgets.cpp
+    third_party/imgui/imgui.cpp
+    )
+
+macro( add_theforge_middleware THEFORGE_MIDDLEWARE_NAME THEFORGE_BACKEND )
+    string(TOUPPER ${THEFORGE_BACKEND} THEFORGE_BACKEND_DEFINE)
+    add_library( TF${THEFORGE_MIDDLEWARE_NAME}${THEFORGE_BACKEND} STATIC
+        ${THEFORGE_MIDDLEWARE_${THEFORGE_MIDDLEWARE_NAME}_FILES}
+        )
+    target_compile_definitions( TF${THEFORGE_MIDDLEWARE_NAME}${THEFORGE_BACKEND} PRIVATE ${THEFORGE_BACKEND_DEFINE} )
+    target_link_libraries( TF${THEFORGE_MIDDLEWARE_NAME}${THEFORGE_BACKEND} TF${THEFORGE_BACKEND} )
+    set( THEFORGE_MIDDLEWARE_${THEFORGE_BACKEND}_LIBRARIES
+        ${THEFORGE_MIDDLEWARE_${THEFORGE_BACKEND}_LIBRARIES}
+        TF${THEFORGE_MIDDLEWARE_NAME}${THEFORGE_BACKEND}
+    )
+endmacro()
+
+if( BUILD_DIRECT3D11 )
+    if( BUILD_MIDDLEWARE_TEXT )
+        add_theforge_middleware( Text Direct3D11 )
+    endif()
+    if( BUILD_MIDDLEWARE_UI )
+        add_theforge_middleware( UI Direct3D11 DIRECT3D11 )
+        target_link_libraries( TFUIDirect3D11 TFTextDirect3D11 )
+    endif()
+endif()
+if( BUILD_DIRECT3D12 )
+    if( BUILD_MIDDLEWARE_TEXT )
+        add_theforge_middleware( Text Direct3D12 )
+    endif()
+    if( BUILD_MIDDLEWARE_UI )
+        add_theforge_middleware( UI Direct3D12 )
+        target_link_libraries( TFUIDirect3D12 TFTextDirect3D12 )
+    endif()
+endif()
+if( BUILD_METAL )
+    if( BUILD_MIDDLEWARE_TEXT )
+        add_theforge_middleware( Text Metal )
+    endif()
+    if( BUILD_MIDDLEWARE_UI )
+        add_theforge_middleware( UI Metal )
+        target_link_libraries( TFUIMetal TFTextMetal )
+    endif()
+endif()
+if( BUILD_VULKAN )
+    if( BUILD_MIDDLEWARE_TEXT )
+        add_theforge_middleware( Text Vulkan )
+    endif()
+    if( BUILD_MIDDLEWARE_UI )
+        add_theforge_middleware( UI Vulkan )
+        target_link_libraries( TFUIVulkan TFTextVulkan )
+    endif()
+endif()
+
+# Profiler
+set( THEFORGE_MICROPROFILE_FILES 
+    third_party/MicroProfile/ProfilerBase.h
+    third_party/MicroProfile/ProfilerHTML.h
+    third_party/MicroProfile/ProfilerUI.h
+    third_party/MicroProfile/Profiler.cpp
+    third_party/MicroProfile/ProfilerBase.cpp
+    third_party/MicroProfile/ProfilerDraw.cpp
+    third_party/MicroProfile/ProfilerInput.cpp
+    third_party/MicroProfile/ProfilerUI.cpp
+    )
+
+if( BUILD_DIRECT3D11 )
+    add_library( TFProfilerDirect3D11 STATIC
+        ${THEFORGE_MICROPROFILE_FILES}
+        )
+    target_compile_definitions( TFProfilerDirect3D11 PRIVATE DIRECT3D11 )
+    target_link_libraries( TFProfilerDirect3D11 TFDirect3D11 TFTextDirect3D11 TFUIDirect3D11 )
+endif()
+if( BUILD_DIRECT3D12 )
+    add_library( TFProfilerDirect3D12 STATIC
+        ${THEFORGE_MICROPROFILE_FILES}
+        )
+    target_compile_definitions( TFProfilerDirect3D12 PRIVATE DIRECT3D12 )
+    target_link_libraries( TFProfilerDirect3D12 TFDirect3D12 TFTextDirect3D12 TFUIDirect3D12 )
+endif()
+if( BUILD_METAL )
+    add_library( TFProfilerMetal STATIC
+        ${THEFORGE_MICROPROFILE_FILES}
+        )
+    target_compile_definitions( TFProfilerMetal PRIVATE METAL )
+    target_link_libraries( TFProfilerMetal TFMetal TFTextMetal TFUIMetal )
+endif()
+if( BUILD_VULKAN )
+    add_library( TFProfilerVulkan STATIC
+        ${THEFORGE_MICROPROFILE_FILES}
+        )
+    target_compile_definitions( TFProfilerVulkan PRIVATE VULKAN )
+    target_link_libraries( TFProfilerVulkan TFVulkan TFTextVulkan TFUIVulkan )
 endif()
 
 # Examples
@@ -395,6 +522,10 @@ if( BUILD_EXAMPLES )
     set( THEFORGE_EXAMPLES_NAMES 01_Transformations )
     install( DIRECTORY src/Examples/UnitTestResources
             DESTINATION bin/Examples )
+    install( DIRECTORY src/Middleware/Text/Shaders
+                DESTINATION bin/Examples/Middleware/Text )
+    install( DIRECTORY src/Middleware/UI/Shaders
+                DESTINATION bin/Examples/Middleware/UI )
     set( THEFORGE_CAMERA_FILES
         src/Examples/Camera/FpsCameraController.cpp
         src/Examples/Camera/GuiCameraController.cpp
@@ -424,6 +555,8 @@ if( BUILD_EXAMPLES )
                 TFAndroid
                 TFCamera
                 TFInput
+                TFProfilerVulkan
+                ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
                 ${Vulkan_LIBRARIES}
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )
@@ -438,6 +571,8 @@ if( BUILD_EXAMPLES )
                 TFiOS
                 TFCamera
                 TFInput
+                TFProfilerMetal
+                ${THEFORGE_MIDDLEWARE_METAL_LIBRARIES}
                 "-framework Metal"
             )
             set( THEFORGE_EXAMPLES_DEFINES
@@ -452,6 +587,8 @@ if( BUILD_EXAMPLES )
                 TFLinux
                 TFCamera
                 TFInput
+                TFProfilerVulkan
+                ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
                 ${Vulkan_LIBRARIES}
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
                 ${X11_LIBRARIES}
@@ -468,6 +605,8 @@ if( BUILD_EXAMPLES )
                 TFmacOS 
                 TFCamera
                 TFInput
+                TFProfilerMetal
+                ${THEFORGE_MIDDLEWARE_METAL_LIBRARIES}
                 "-framework Metal"
             )
             set( THEFORGE_EXAMPLES_DEFINES
@@ -481,6 +620,8 @@ if( BUILD_EXAMPLES )
                 TFWindows 
                 TFCamera
                 TFInput
+                TFProfilerDirect3D11
+                ${THEFORGE_MIDDLEWARE_DIRECT3D11_LIBRARIES}
                 ${D3D11_LIBRARIES}
             )
             set( THEFORGE_EXAMPLES_DEFINES
@@ -494,6 +635,8 @@ if( BUILD_EXAMPLES )
                 TFWindows
                 TFCamera
                 TFInput
+                TFProfilerDirect3D12
+                ${THEFORGE_MIDDLEWARE_DIRECT3D12_LIBRARIES}
                 ${D3D12_LIBRARIES}
             )
             set( THEFORGE_EXAMPLES_DEFINES
@@ -507,6 +650,8 @@ if( BUILD_EXAMPLES )
                 TFWindows
                 TFCamera
                 TFInput
+                TFProfilerVulkan
+                ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
                 ${Vulkan_LIBRARIES} 
                 ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )
@@ -533,7 +678,7 @@ if( BUILD_VULKAN )
              DESTINATION include/volk )
 endif()
 
-if( INSTALL_TINYSTL )
-    install( DIRECTORY third_party/TinySTL
+if( INSTALL_EASTL )
+    install( DIRECTORY third_party/EASTL
              DESTINATION include )
 endif()

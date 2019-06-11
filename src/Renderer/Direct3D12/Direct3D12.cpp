@@ -97,7 +97,7 @@ extern "C"
 #endif
 
 #include "Direct3D12MemoryAllocator.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "Renderer/Interfaces/IMemoryManager.h"
 
 extern void
 			d3d12_createShaderReflection(const uint8_t* shaderCode, uint32_t shaderSize, ShaderStage shaderStage, ShaderReflection* pOutReflection);

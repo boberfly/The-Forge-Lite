@@ -226,9 +226,21 @@ void openWindow(const char* app_name, WindowsDesc* winDesc)
 	XMapWindow(winDesc->display, winDesc->xlib_window);
 	XFlush(winDesc->display);
 	winDesc->xlib_wm_delete_window = XInternAtom(winDesc->display, "WM_DELETE_WINDOW", False);
+	XSetWMProtocols(winDesc->display, winDesc->xlib_window, &winDesc->xlib_wm_delete_window, 1);
+	
+	// Restrict window min size
+	XSizeHints* size_hints = XAllocSizeHints();
+	size_hints->flags = PMinSize;
+    size_hints->min_width = 128;
+    size_hints->min_height = 128;
+    XSetWMNormalHints(winDesc->display, winDesc->xlib_window, size_hints);
+    XFree(size_hints);
 
 	double baseDpi = 96.0;
 	gRetinaScale = (float)(PlatformGetMonitorDPI(winDesc->display) / baseDpi);
+	// If an invalid retina scale is returned, revert to a scale of 1.0f
+	if (gRetinaScale <= 0.001f)
+		gRetinaScale = 1.0f;
 }
 
 bool handleMessages(WindowsDesc* winDesc)

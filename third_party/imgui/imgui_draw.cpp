@@ -27,7 +27,6 @@ Index of this file:
 //#endif
 #include "imgui_internal.h"
 #include "Renderer/Interfaces/IFileSystem.h"
-#include "Renderer/Interfaces/IMemoryManager.h"
 
 #include <stdio.h>      // vsnprintf, sscanf, printf
 #if !defined(alloca)
@@ -42,6 +41,8 @@ Index of this file:
 #include <stdlib.h>     // alloca
 #endif
 #endif
+
+#include "Renderer/Interfaces/IMemoryManager.h"
 
 // Visual Studio warnings
 #ifdef _MSC_VER
@@ -141,7 +142,7 @@ namespace IMGUI_STB_NAMESPACE
 #ifdef IMGUI_STB_TRUETYPE_FILENAME
 #include IMGUI_STB_TRUETYPE_FILENAME
 #else
-#include "Nothings/stb_truetype.h"
+#include "../Nothings/stb_truetype.h"
 #endif
 #endif
 

@@ -64,7 +64,6 @@ typedef struct RawImageData
 typedef struct BinaryImageData
 {
 	unsigned char* pBinaryData;
-	bool mUseMipMaps;
 	uint32_t mSize;
 	const char* pExtension;
 } BinaryImageData;
@@ -79,7 +78,6 @@ typedef struct TextureLoadDesc
 	const char* pFilename;
 	FSRoot      mRoot;
 	uint32_t    mNodeIndex;
-	bool        mUseMipmaps;
 	bool        mSrgb;
 	/// Load texture from raw data
 	RawImageData* pRawImageData = NULL;

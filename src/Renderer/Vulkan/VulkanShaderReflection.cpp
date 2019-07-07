@@ -27,8 +27,8 @@
 #include "Renderer/IRenderer.h"
 
 #include "SpirvTools/SpirvTools.h"
-#include "Interfaces/IMemoryManager.h"
 #include "Interfaces/ILogManager.h"
+#include "Interfaces/IMemoryManager.h"
 
 static DescriptorType sSPIRV_TO_DESCRIPTOR[SPIRV_TYPE_COUNT] = {
 	DESCRIPTOR_TYPE_UNDEFINED,        DESCRIPTOR_TYPE_UNDEFINED,    DESCRIPTOR_TYPE_UNIFORM_BUFFER,  DESCRIPTOR_TYPE_RW_BUFFER,

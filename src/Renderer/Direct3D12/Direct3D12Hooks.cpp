@@ -25,7 +25,7 @@
 #if defined(DIRECT3D12)
 #include "IRenderer.h"
 #include "Direct3D12Hooks.h"
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 static void enable_debug_layer_hook(Renderer* pRenderer)
 {

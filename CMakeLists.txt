@@ -29,9 +29,6 @@ option( BUILD_EXAMPLES "Build Examples" OFF )
 
 option( INSTALL_EASTL "Install EASTL" ON )
 
-# Dependencies
-option( BUILD_SPIRV_CROSS "Build SPIRV-Cross, needed for Vulkan reflection" ON )
-
 find_package( Threads REQUIRED )
 
 if( BUILD_LINUX )
@@ -64,12 +61,35 @@ include_directories(
     third_party
 )
 
-# Build Spirv-Cross from CMake
-if( BUILD_SPIRV_CROSS )
-    option( SPIRV_CROSS_EXCEPTIONS_TO_ASSERTIONS "Instead of throwing exceptions assert" ON )
-    add_subdirectory( third_party/SPIRV_Cross EXCLUDE_FROM_ALL )
-    set( THEFORGE_SPIRV_CROSS_LIBRARY spirv-cross-core )
-endif()
+# Spirv-Cross
+set( THEFORGE_SPIRV_CROSS_FILES 
+    third_party/SPIRV_Cross/GLSL.std.450.h
+    third_party/SPIRV_Cross/spirv_cfg.hpp
+    third_party/SPIRV_Cross/spirv_common.hpp
+    third_party/SPIRV_Cross/spirv_cpp.hpp
+    third_party/SPIRV_Cross/spirv_cross_containers.hpp
+    third_party/SPIRV_Cross/spirv_cross_error_handling.hpp
+    third_party/SPIRV_Cross/spirv_cross_parsed_ir.hpp
+    third_party/SPIRV_Cross/spirv_cross_util.hpp
+    third_party/SPIRV_Cross/spirv_cross.hpp
+    third_party/SPIRV_Cross/spirv_glsl.hpp
+    third_party/SPIRV_Cross/spirv_hlsl.hpp
+    third_party/SPIRV_Cross/spirv_msl.hpp
+    third_party/SPIRV_Cross/spirv_parser.hpp
+    third_party/SPIRV_Cross/spirv_reflect.hpp
+    third_party/SPIRV_Cross/spirv.h
+    third_party/SPIRV_Cross/spirv.hpp
+    third_party/SPIRV_Cross/spirv_cfg.cpp
+    third_party/SPIRV_Cross/spirv_cpp.cpp
+    third_party/SPIRV_Cross/spirv_cross_parsed_ir.cpp
+    third_party/SPIRV_Cross/spirv_cross_util.cpp
+    third_party/SPIRV_Cross/spirv_cross.cpp
+    third_party/SPIRV_Cross/spirv_glsl.cpp
+    third_party/SPIRV_Cross/spirv_hlsl.cpp
+    third_party/SPIRV_Cross/spirv_msl.cpp
+    third_party/SPIRV_Cross/spirv_parser.cpp
+    third_party/SPIRV_Cross/spirv_reflect.cpp
+)
 
 # Public headers
 set( THEFORGE_PUBLIC_H_FILES
@@ -83,14 +103,14 @@ set( THEFORGE_PUBLIC_H_FILES
 set( THEFORGE_INTERFACES_FILES 
     include/Renderer/Interfaces/IApp.h
     include/Renderer/Interfaces/IFileSystem.h
-    include/Renderer/Interfaces/ILogManager.h
-    include/Renderer/Interfaces/IMemoryManager.h
+    include/Renderer/Interfaces/ILog.h
+    include/Renderer/Interfaces/IMemory.h
     include/Renderer/Interfaces/IMiddleware.h
     include/Renderer/Interfaces/IOperatingSystem.h
     include/Renderer/Interfaces/IPlatformEvents.h
     include/Renderer/Interfaces/IProfiler.h
     include/Renderer/Interfaces/IThread.h
-    include/Renderer/Interfaces/ITimeManager.h
+    include/Renderer/Interfaces/ITime.h
 )
 
 set( THEFORGE_IMAGE_H_FILES
@@ -138,10 +158,10 @@ set( THEFORGE_IMAGE_FILES
 
 # Logging
 set( THEFORGE_LOGGING_FILES
-    src/OS/Logging/LogManager.cpp
-    src/OS/Logging/LogManager.h
+    src/OS/Logging/Log.cpp
+    src/OS/Logging/Log.h
     )
-install( FILES src/OS/Logging/LogManager.h
+install( FILES src/OS/Logging/Log.h
         DESTINATION include/Renderer/Logging )
 
 # Math
@@ -152,7 +172,7 @@ set( THEFORGE_MATH_FILES
 # Memory Tracking
 set( THEFORGE_MEMORYTRACKING_FILES
     src/OS/MemoryTracking/NoMemoryDefines.h
-    src/OS/MemoryTracking/MemoryTrackingManager.cpp
+    src/OS/MemoryTracking/MemoryTracking.cpp
     )
 
 if( USE_MEMORY_TRACKING )
@@ -170,8 +190,9 @@ set( THEFORGE_COMMON_FILES
 set( THEFORGE_ANDROID_FILES 
     src/OS/Android/AndroidBase.cpp
     src/OS/Android/AndroidFileSystem.cpp
-    src/OS/Android/AndroidLogManager.cpp
-    src/OS/Android/AndroidThreadManager.cpp
+    src/OS/Android/AndroidLog.cpp
+    src/OS/Android/AndroidThread.cpp
+    src/OS/Android/AndroidTime.cpp
     )
 set( THEFORGE_IOS_FILES 
     src/OS/iOS/AppDelegate.h
@@ -179,29 +200,30 @@ set( THEFORGE_IOS_FILES
     src/OS/iOS/iOSBase.cpp
     src/OS/iOS/iOSBase.mm
     src/OS/iOS/iOSFileSystem.mm
-    src/OS/iOS/iOSLogManager.cpp
-    src/OS/iOS/iOSThreadManager.cpp
+    src/OS/iOS/iOSLog.cpp
+    src/OS/iOS/iOSThread.cpp
     )
 set( THEFORGE_LINUX_FILES 
     src/OS/Linux/LinuxBase.cpp
     src/OS/Linux/LinuxFileSystem.cpp
-    src/OS/Linux/LinuxLogManager.cpp
-    src/OS/Linux/LinuxThreadManager.cpp
+    src/OS/Linux/LinuxLog.cpp
+    src/OS/Linux/LinuxThread.cpp
+    src/OS/Linux/LinuxTime.cpp
     )
 set( THEFORGE_MACOS_FILES 
     src/OS/macOS/AppDelegate.h
     src/OS/macOS/AppDelegate.m
-    src/OS/macOS/macOSBase.cpp
-    src/OS/macOS/iOSBase.mm
+    src/OS/macOS/macOSBase.mm
     src/OS/macOS/macOSFileSystem.mm
-    src/OS/macOS/macOSLogManager.cpp
-    src/OS/macOS/macOSThreadManager.cpp
+    src/OS/macOS/macOSLog.cpp
+    src/OS/macOS/macOSThread.cpp
     )
 set( THEFORGE_WINDOWS_FILES 
     src/OS/Windows/WindowsBase.cpp
     src/OS/Windows/WindowsFileSystem.cpp
-    src/OS/Windows/WindowsLogManager.cpp
-    src/OS/Windows/WindowsThreadManager.cpp
+    src/OS/Windows/WindowsLog.cpp
+    src/OS/Windows/WindowsThread.cpp
+    src/OS/Windows/WindowsTime.cpp
     )
 
 # Direct3D 11
@@ -384,12 +406,10 @@ if( BUILD_VULKAN )
         ${THEFORGE_VULKAN_DEP_FILES}
         ${THEFORGE_LOGGING_FILES}
         ${THEFORGE_MEMORYTRACKING_FILES}
+        ${THEFORGE_SPIRV_CROSS_FILES}
         )
     target_compile_definitions( TFVulkan PRIVATE VULKAN )
-    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} ${THEFORGE_SPIRV_CROSS_LIBRARY} )
-    if( BUILD_SPIRV_CROSS )
-        add_dependencies( TFVulkan ${THEFORGE_SPIRV_CROSS_LIBRARY} )
-    endif()
+    target_link_libraries( TFVulkan ${Vulkan_LIBRARIES} )
     install( TARGETS TFVulkan DESTINATION lib )
 endif()
 
@@ -558,7 +578,6 @@ if( BUILD_EXAMPLES )
                 TFProfilerVulkan
                 ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
                 ${Vulkan_LIBRARIES}
-                ${THEFORGE_SPIRV_CROSS_LIBRARY}
             )
             set( THEFORGE_EXAMPLES_DEFINES
                 VULKAN
@@ -590,7 +609,6 @@ if( BUILD_EXAMPLES )
                 TFProfilerVulkan
                 ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
                 ${Vulkan_LIBRARIES}
-                ${THEFORGE_SPIRV_CROSS_LIBRARY}
                 ${X11_LIBRARIES}
                 ${CMAKE_DL_LIBS}
             )
@@ -652,8 +670,7 @@ if( BUILD_EXAMPLES )
                 TFInput
                 TFProfilerVulkan
                 ${THEFORGE_MIDDLEWARE_VULKAN_LIBRARIES}
-                ${Vulkan_LIBRARIES} 
-                ${THEFORGE_SPIRV_CROSS_LIBRARY}
+                ${Vulkan_LIBRARIES}
             )
             set( THEFORGE_EXAMPLES_DEFINES
                 VULKAN

@@ -31,11 +31,11 @@
 #include "EASTL/deque.h"
 
 #include "OS/Core/Atomics.h"
-#include "Renderer/IRenderer.h"
-#include "Renderer/ResourceLoader.h"
-#include "Renderer/Interfaces/ILogManager.h"
-#include "Renderer/Interfaces/IThread.h"
-#include "Renderer/Image/Image.h"
+#include "IRenderer.h"
+#include "ResourceLoader.h"
+#include "Interfaces/ILog.h"
+#include "Interfaces/IThread.h"
+#include "Image/Image.h"
 
 //this is needed for unix as PATH_MAX is defined instead of MAX_PATH
 #ifndef _WIN32
@@ -48,7 +48,7 @@
 #endif
 #define MAX_PATH PATH_MAX
 #endif
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 // buffer functions
 #if !defined(ENABLE_RENDERER_RUNTIME_SWITCH)
@@ -783,7 +783,7 @@ static void streamerThreadFunc(void* pThreadData)
 			pLoader->mTokenMutex.Acquire();
 			tfrg_atomic64_store_release(&pLoader->mTokenCompleted, nextToken > prevToken ? nextToken : prevToken);
 			pLoader->mTokenMutex.Release();
-			pLoader->mTokenCond.SetAll();
+			pLoader->mTokenCond.WakeAll();
 			nextTimeslot = getSystemTime() + pLoader->mDesc.mTimesliceMs;
 		}
 
@@ -816,7 +816,7 @@ static void addResourceLoader(Renderer* pRenderer, ResourceLoaderDesc* pDesc, Re
 static void removeResourceLoader(ResourceLoader* pLoader)
 {
 	pLoader->mRun = false;
-	pLoader->mQueueCond.Set();
+	pLoader->mQueueCond.WakeOne();
 	destroy_thread(pLoader->mThread);
 
 	conf_delete(pLoader);
@@ -866,7 +866,7 @@ static void queueResourceUpdate(ResourceLoader* pLoader, BufferUpdateDesc* pBuff
 	pLoader->mRequestQueue[nodeIndex].emplace_back(UpdateRequest(*pBufferUpdate));
 	pLoader->mRequestQueue[nodeIndex].back().mToken = t;
 	pLoader->mQueueMutex.Release();
-	pLoader->mQueueCond.Set();
+	pLoader->mQueueCond.WakeOne();
 	if (token) *token = t;
 }
 
@@ -878,7 +878,7 @@ static void queueResourceUpdate(ResourceLoader* pLoader, TextureUpdateDescIntern
 	pLoader->mRequestQueue[nodeIndex].emplace_back(UpdateRequest(*pTextureUpdate));
 	pLoader->mRequestQueue[nodeIndex].back().mToken = t;
 	pLoader->mQueueMutex.Release();
-	pLoader->mQueueCond.Set();
+	pLoader->mQueueCond.WakeOne();
 	if (token) *token = t;
 }
 
@@ -890,7 +890,7 @@ static void queueResourceUpdate(ResourceLoader* pLoader, Buffer* pBuffer, SyncTo
 	pLoader->mRequestQueue[nodeIndex].emplace_back(UpdateRequest(pBuffer));
 	pLoader->mRequestQueue[nodeIndex].back().mToken = t;
 	pLoader->mQueueMutex.Release();
-	pLoader->mQueueCond.Set();
+	pLoader->mQueueCond.WakeOne();
 	if (token) *token = t;
 }
 
@@ -902,7 +902,7 @@ static void queueResourceUpdate(ResourceLoader* pLoader, Texture* pTexture, Sync
 	pLoader->mRequestQueue[nodeIndex].emplace_back(UpdateRequest(pTexture));
 	pLoader->mRequestQueue[nodeIndex].back().mToken = t;
 	pLoader->mQueueMutex.Release();
-	pLoader->mQueueCond.Set();
+	pLoader->mQueueCond.WakeOne();
 	if (token) *token = t;
 }
 
@@ -1355,9 +1355,9 @@ void mtl_compileShader(
 	args.push_back("-o");
 	args.push_back(intermediateFile.c_str());
 
-	//enable the 2 below for shader debugging on xcode 10.0
-	//args.push_back("-MO");
-	//args.push_back("-gline-tables-only");
+	//enable the 2 below for shader debugging on xcode
+//	args.push_back("-MO");
+//	args.push_back("-gline-tables-only");
 	args.push_back("-D");
 	args.push_back("MTL_SHADER=1");    // Add MTL_SHADER macro to differentiate structs in headers shared by app/shader code.
 	// Add user defined macros to the command line
@@ -1754,7 +1754,7 @@ bool find_shader_stage(
     {
 #ifndef METAL
         *pOutStage = &pBinaryDesc->mComp;
-        *pStage = SHADER_STAGE_LIB;
+        *pStage = SHADER_STAGE_RAYTRACING;
 #else
         *pOutStage = &pBinaryDesc->mComp;
         *pStage = SHADER_STAGE_COMP;
@@ -1780,7 +1780,8 @@ void addShader(Renderer* pRenderer, const ShaderLoadDesc* pDesc, Shader** ppShad
 		if (pDesc->mStages[i].mFileName.size() != 0)
 		{
 			eastl::string filename = pDesc->mStages[i].mFileName;
-			if (pDesc->mStages[i].mRoot != FSR_SrcShaders)
+			// For absolute path, ignore the shader root path
+			if (pDesc->mStages[i].mRoot != FSR_SrcShaders && pDesc->mStages[i].mRoot != FSR_Absolute)
 				filename = FileSystem::GetRootPath(FSR_SrcShaders) + filename;
 
 			ShaderStage            stage;

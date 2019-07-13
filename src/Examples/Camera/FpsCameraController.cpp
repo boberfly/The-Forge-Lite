@@ -33,12 +33,12 @@
 
 #include "Input/InputSystem.h"
 #include "Input/InputMappings.h"
-//#include "../../../Middleware_3/UI/AppUI.h"
+#include "Middleware/UI/AppUI.h"
 
 // Include this file as last include in all cpp files allocating memory
-#include "Interfaces/ILogManager.h"
+#include "Interfaces/ILog.h"
 
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 static const float k_scrollSpeed = -5.0f;
 #if !defined(METAL) && !defined(__ANDROID__)
@@ -113,7 +113,6 @@ bool        FpsCameraController::onInputEvent(const ButtonData* pData)
 {
 	// If mouse is not captured or the input event was consumed
 	// Do nothing
-	/*
 	if (!InputSystem::IsMouseCaptured() || pData->mEventConsumed)
 		return false;
 
@@ -127,7 +126,6 @@ bool        FpsCameraController::onInputEvent(const ButtonData* pData)
 		const vec3& v{ m.getCol2().getXYZ() };
 		viewPosition -= v * ((float)pData->mValue[0] * k_scrollSpeed);
 	}
-	*/
 
 	return true;
 }
@@ -140,7 +138,6 @@ void FpsCameraController::update(float deltaTime)
 	deltaTime = max(deltaTime, 0.000001f);
 
 	//input should be captured by default on consoles/mobiles.
-	/*
 	if (!InputSystem::IsMouseCaptured())
 		return;
 
@@ -192,7 +189,6 @@ void FpsCameraController::update(float deltaTime)
 			viewRotation = { newRx, newRy };
 		}
 	}
-	*/
 
 	//divide by length to normalize if necessary
 	float lenS = lengthSqr(moveVec);

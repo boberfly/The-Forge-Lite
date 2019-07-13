@@ -30,9 +30,9 @@
 //Interfaces
 #include "Camera/Interfaces/ICameraController.h"
 #include "Renderer/Interfaces/IApp.h"
-#include "Renderer/Interfaces/ILogManager.h"
+#include "Renderer/Interfaces/ILog.h"
 #include "Renderer/Interfaces/IFileSystem.h"
-#include "Renderer/Interfaces/ITimeManager.h"
+#include "Renderer/Interfaces/ITime.h"
 #include "Renderer/Interfaces/IProfiler.h"
 #include "Middleware/UI/AppUI.h"
 #include "Renderer/IRenderer.h"
@@ -43,7 +43,7 @@
 //Math
 #include "OS/Math/MathTypes.h"
 
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Renderer/Interfaces/IMemory.h"
 
 /// Demo structures
 struct PlanetInfoStruct

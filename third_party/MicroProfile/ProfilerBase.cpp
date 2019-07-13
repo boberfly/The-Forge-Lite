@@ -3,8 +3,8 @@
 
 #if PROFILE_ENABLED
 
-#include "Renderer/GpuProfiler.h"
-#include "Renderer/Interfaces/IFileSystem.h"
+#include "GpuProfiler.h"
+#include "Interfaces/IFileSystem.h"
 #include <algorithm>
 
 #ifdef _WIN32
@@ -64,7 +64,7 @@ int64_t ProfileGetTick()
 
 #endif 
 
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 #if PROFILE_WEBSERVER || PROFILE_CONTEXT_SWITCH_TRACE
 typedef ThreadFunction ProfileThreadFunc;

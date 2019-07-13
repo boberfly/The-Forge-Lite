@@ -26,7 +26,7 @@
 #include "Renderer/IRenderer.h"
 #include "Renderer/Interfaces/IFileSystem.h"
 #include "Renderer/Interfaces/IMiddleware.h"
-#include "Renderer/Interfaces/ILogManager.h"
+#include "Renderer/Interfaces/ILog.h"
 #include "EASTL/vector.h"
 #include "EASTL/string.h"
 #include "../Text/Fontstash.h"

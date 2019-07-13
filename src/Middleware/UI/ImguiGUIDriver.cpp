@@ -30,14 +30,14 @@
 #include "AppUI.h"
 
 #include "Renderer/Interfaces/IOperatingSystem.h"
-#include "Renderer/Interfaces/ILogManager.h"
+#include "Renderer/Interfaces/ILog.h"
 #include "Renderer/IRenderer.h"
 #include "Renderer/ResourceLoader.h"
 
 #include "Input/InputSystem.h"
 #include "Input/InputMappings.h"
 
-#include "Renderer/Interfaces/IMemoryManager.h"    //NOTE: this should be the last include in a .cpp
+#include "Renderer/Interfaces/IMemory.h"    //NOTE: this should be the last include in a .cpp
 
 #define LABELID(prop) eastl::string().sprintf("##%llu", (uint64_t)(prop.pData)).c_str()
 #define LABELID1(prop) eastl::string().sprintf("##%llu", (uint64_t)(prop)).c_str()

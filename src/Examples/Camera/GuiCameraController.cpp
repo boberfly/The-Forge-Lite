@@ -24,12 +24,12 @@
 
 #define _USE_MATH_DEFINES
 #include "Interfaces/ICameraController.h"
-//#include "../../../Middleware_3/Input/InputSystem.h"
-//#include "../../../Middleware_3/Input/InputMappings.h"
-//#include "../../../Middleware_3/UI/AppUI.h"
+#include "Input/InputSystem.h"
+#include "Input/InputMappings.h"
+#include "Middleware/UI/AppUI.h"
 
 // Include this file as last include in all cpp files allocating memory
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 static const float k_mouseTranslationScale = 0.05f;
 static const float k_rotationSpeed = 0.003f;
@@ -86,7 +86,6 @@ void GuiCameraController::setMotionParameters(const CameraMotionParameters& cmp)
 
 bool GuiCameraController::onInputEvent(const ButtonData* pData)
 {
-	/*
 	if (InputSystem::GetBoolInput(KEY_CONFIRM_PRESSED) && InputSystem::GetBoolInput(KEY_RIGHT_BUMPER_PRESSED))
 	{
 		vec3 move{ (float)-pData->mValue[0], (float)pData->mValue[1], 0 };
@@ -109,7 +108,6 @@ bool GuiCameraController::onInputEvent(const ButtonData* pData)
 		viewRotation.setX(k_xRotLimit);
 	else if (viewRotation.getX() < -k_xRotLimit)
 		viewRotation.setX(-k_xRotLimit);
-	*/
 
 	return false;
 }

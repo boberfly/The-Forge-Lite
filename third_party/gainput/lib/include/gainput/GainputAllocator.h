@@ -2,8 +2,8 @@
 #ifndef GAINPUTALLOCATOR_H_
 #define GAINPUTALLOCATOR_H_
 
-#define MEM_MANAGER_FROM_HEADER
-#include "Interfaces/IMemoryManager.h"
+#define IMEMORY_FROM_HEADER
+#include "Interfaces/IMemory.h"
 
 namespace gainput
 {

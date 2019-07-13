@@ -841,8 +841,8 @@ CODE
 #include <stdint.h>     // intptr_t
 #endif
 
-#include "Renderer/Interfaces/IFileSystem.h"
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Interfaces/IFileSystem.h"
+#include "Interfaces/IMemory.h"
 
 #define IMGUI_DEBUG_NAV_SCORING     0
 #define IMGUI_DEBUG_NAV_RECTS       0

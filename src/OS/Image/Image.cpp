@@ -32,7 +32,7 @@
 #include "EASTL/unordered_map.h"
 
 #include "Image/Image.h"
-#include "Interfaces/ILogManager.h"
+#include "Interfaces/ILog.h"
 #include "TinyEXR/tinyexr.h"
 //stb_image
 #define STB_IMAGE_IMPLEMENTATION
@@ -53,7 +53,7 @@
 #include "Nothings/stb_image_write.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "Nothings/stb_image_resize.h"
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 // --- IMAGE HEADERS ---
 

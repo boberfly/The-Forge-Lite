@@ -44,12 +44,12 @@
 
 #include "Interfaces/IOperatingSystem.h"
 #include "Interfaces/IPlatformEvents.h"
-#include "Interfaces/ILogManager.h"
-#include "Interfaces/ITimeManager.h"
+#include "Interfaces/ILog.h"
+#include "Interfaces/ITime.h"
 #include "Interfaces/IThread.h"
 #include "Interfaces/IApp.h"
 #include "Interfaces/IFileSystem.h"
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 static IApp* pApp = NULL;
 
@@ -637,8 +637,12 @@ float2 getDpiScale()
 	}
 	else
 	{
+#if(WINVER >= 0x0605)
 		float systemDpi = ::GetDpiForSystem() / 96.0f;
 		ret = { systemDpi, systemDpi };
+#else
+		ret = { 1.0f, 1.0f };
+#endif
 	}
 
 	return ret;
@@ -655,50 +659,6 @@ bool getResolutionSupport(const MonitorDesc* pMonitor, const Resolution* pRes)
 	return false;
 }
 
-/************************************************************************/
-// Time Related Functions
-/************************************************************************/
-unsigned getSystemTime() { return (unsigned)timeGetTime(); }
-
-unsigned getTimeSinceStart() { return (unsigned)time(NULL); }
-
-void sleep(unsigned mSec) { ::Sleep((DWORD)mSec); }
-
-static int64_t highResTimerFrequency = 0;
-
-void initTime()
-{
-	LARGE_INTEGER frequency;
-	if (QueryPerformanceFrequency(&frequency))
-	{
-		highResTimerFrequency = frequency.QuadPart;
-	}
-	else
-	{
-		highResTimerFrequency = 1000LL;
-	}
-}
-
-// Make sure timer frequency is initialized before anyone tries to use it
-struct StaticTime
-{
-	StaticTime() { initTime(); }
-} staticTimeInst;
-
-int64_t getUSec()
-{
-	LARGE_INTEGER counter;
-	QueryPerformanceCounter(&counter);
-	return counter.QuadPart * (int64_t)1e6 / getTimerFrequency();
-}
-
-int64_t getTimerFrequency()
-{
-	if (highResTimerFrequency == 0)
-		initTime();
-
-	return highResTimerFrequency;
-}
 /************************************************************************/
 // App Entrypoint
 /************************************************************************/

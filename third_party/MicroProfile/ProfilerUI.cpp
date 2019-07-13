@@ -4,8 +4,8 @@
 
 #include "ProfilerBase.h"
 
-#include "Renderer/Interfaces/ILogManager.h"
-#include "Renderer/Interfaces/IFileSystem.h"
+#include "Interfaces/ILog.h"
+#include "Interfaces/IFileSystem.h"
 
 // Globals needed for microprofiler UI
 

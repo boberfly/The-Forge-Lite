@@ -1,4 +1,4 @@
-#include "Renderer/Interfaces/IProfiler.h"
+#include "Interfaces/IProfiler.h"
 
 #if (PROFILE_ENABLED)
 
@@ -7,10 +7,10 @@
 
 #include "EASTL/utility.h"
 #include "EASTL/unordered_map.h"
-#include "Renderer/IRenderer.h"
-#include "Renderer/ResourceLoader.h"
+#include "IRenderer.h"
+#include "ResourceLoader.h"
 #include "Middleware/Text/Fontstash.h"
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 struct ProfileVertex
 {

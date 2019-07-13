@@ -28,7 +28,7 @@
 #define FONTSTASH_IMPLEMENTATION
 #include "Fontstash/src/fontstash.h"
 
-#include "Renderer/Interfaces/ILogManager.h"
+#include "Renderer/Interfaces/ILog.h"
 #include "Renderer/Interfaces/IFileSystem.h"
 #include "Renderer/Image/Image.h"
 #include "OS/Core/RingBuffer.h"
@@ -37,7 +37,7 @@
 
 #include "EASTL/vector.h"
 
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Renderer/Interfaces/IMemory.h"
 
 FSRoot FSR_MIDDLEWARE_TEXT = FSR_Middleware0;
 

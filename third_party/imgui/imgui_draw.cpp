@@ -26,7 +26,7 @@ Index of this file:
 //#define IMGUI_DEFINE_MATH_OPERATORS
 //#endif
 #include "imgui_internal.h"
-#include "Renderer/Interfaces/IFileSystem.h"
+#include "Interfaces/IFileSystem.h"
 
 #include <stdio.h>      // vsnprintf, sscanf, printf
 #if !defined(alloca)
@@ -42,7 +42,7 @@ Index of this file:
 #endif
 #endif
 
-#include "Renderer/Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 // Visual Studio warnings
 #ifdef _MSC_VER
@@ -119,7 +119,7 @@ namespace IMGUI_STB_NAMESPACE
 #ifdef IMGUI_STB_RECT_PACK_FILENAME
 #include IMGUI_STB_RECT_PACK_FILENAME
 #else
-#include "Nothings/stb_rect_pack.h"
+#include "../Nothings/stb_rect_pack.h"
 #endif
 #endif
 

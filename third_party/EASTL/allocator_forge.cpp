@@ -2,7 +2,7 @@
 #include "allocator_forge.h"
 
 #if EASTL_ALLOCATOR_FORGE
-#include "Interfaces/IMemoryManager.h"
+#include "Interfaces/IMemory.h"
 
 	namespace eastl
 	{

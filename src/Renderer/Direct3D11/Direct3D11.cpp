@@ -34,8 +34,8 @@
 #include "EASTL/string.h"
 #include "EASTL/unordered_map.h"
 #include "EASTL/vector.h"
-#include "Interfaces/ILogManager.h"
-#include "Renderer/IRenderer.h"
+#include "Interfaces/ILog.h"
+#include "IRenderer.h"
 #include "OS/Core/RingBuffer.h"
 #include "EASTL/functional.h"
 #include "winpixeventruntime/Include/WinPixEventRuntime/pix3.h"
@@ -69,7 +69,7 @@ extern "C"
 }
 
 //#include "Direct3D11MemoryAllocator.h"
-#include "../../OS/Interfaces/IMemoryManager.h"
+#include "../../OS/Interfaces/IMemory.h"
 
 // clang-format off
 extern void d3d11_createShaderReflection(const uint8_t* shaderCode, uint32_t shaderSize, ShaderStage shaderStage, ShaderReflection* pOutReflection);
@@ -2541,7 +2541,7 @@ void addRootSignature(Renderer* pRenderer, const RootSignatureDesc* pRootSignatu
 
 				for (ShaderResource& res : shaderResources)
 				{
-					if (res.name == pNode->first)
+					if (strcmp(res.name, pNode->first) == 0)
 					{
 						res.used_stages |= pRes->used_stages;
 						break;

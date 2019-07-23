@@ -4,6 +4,11 @@ project( The-Forge-Lite )
 
 set(CMAKE_CXX_STANDARD 14)
 
+function(set_prefix var prefix)
+  string(REGEX REPLACE "(^|;)([^;]+)" "\\1${prefix}\\2" tmp "${ARGN}")
+  set(${var} "${tmp}" PARENT_SCOPE)
+endfunction()
+
 list(APPEND CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/cmake/modules"
 )
@@ -62,91 +67,91 @@ include_directories(
 )
 
 # Spirv-Cross
-set( THEFORGE_SPIRV_CROSS_FILES 
-    third_party/SPIRV_Cross/GLSL.std.450.h
-    third_party/SPIRV_Cross/spirv_cfg.hpp
-    third_party/SPIRV_Cross/spirv_common.hpp
-    third_party/SPIRV_Cross/spirv_cpp.hpp
-    third_party/SPIRV_Cross/spirv_cross_containers.hpp
-    third_party/SPIRV_Cross/spirv_cross_error_handling.hpp
-    third_party/SPIRV_Cross/spirv_cross_parsed_ir.hpp
-    third_party/SPIRV_Cross/spirv_cross_util.hpp
-    third_party/SPIRV_Cross/spirv_cross.hpp
-    third_party/SPIRV_Cross/spirv_glsl.hpp
-    third_party/SPIRV_Cross/spirv_hlsl.hpp
-    third_party/SPIRV_Cross/spirv_msl.hpp
-    third_party/SPIRV_Cross/spirv_parser.hpp
-    third_party/SPIRV_Cross/spirv_reflect.hpp
-    third_party/SPIRV_Cross/spirv.h
-    third_party/SPIRV_Cross/spirv.hpp
-    third_party/SPIRV_Cross/spirv_cfg.cpp
-    third_party/SPIRV_Cross/spirv_cpp.cpp
-    third_party/SPIRV_Cross/spirv_cross_parsed_ir.cpp
-    third_party/SPIRV_Cross/spirv_cross_util.cpp
-    third_party/SPIRV_Cross/spirv_cross.cpp
-    third_party/SPIRV_Cross/spirv_glsl.cpp
-    third_party/SPIRV_Cross/spirv_hlsl.cpp
-    third_party/SPIRV_Cross/spirv_msl.cpp
-    third_party/SPIRV_Cross/spirv_parser.cpp
-    third_party/SPIRV_Cross/spirv_reflect.cpp
+set_prefix( THEFORGE_SPIRV_CROSS_FILES third_party/SPIRV_Cross/
+    GLSL.std.450.h
+    spirv_cfg.hpp
+    spirv_common.hpp
+    spirv_cpp.hpp
+    spirv_cross_containers.hpp
+    spirv_cross_error_handling.hpp
+    spirv_cross_parsed_ir.hpp
+    spirv_cross_util.hpp
+    spirv_cross.hpp
+    spirv_glsl.hpp
+    spirv_hlsl.hpp
+    spirv_msl.hpp
+    spirv_parser.hpp
+    spirv_reflect.hpp
+    spirv.h
+    spirv.hpp
+    spirv_cfg.cpp
+    spirv_cpp.cpp
+    spirv_cross_parsed_ir.cpp
+    spirv_cross_util.cpp
+    spirv_cross.cpp
+    spirv_glsl.cpp
+    spirv_hlsl.cpp
+    spirv_msl.cpp
+    spirv_parser.cpp
+    spirv_reflect.cpp
 )
 
 # Public headers
-set( THEFORGE_PUBLIC_H_FILES
-    include/Renderer/GpuProfiler.h
-    include/Renderer/IRay.h
-    include/Renderer/IRenderer.h
-    include/Renderer/IShaderReflection.h
-    include/Renderer/ResourceLoader.h
+set_prefix( THEFORGE_PUBLIC_H_FILES include/Renderer/
+    GpuProfiler.h
+    IRay.h
+    IRenderer.h
+    IShaderReflection.h
+    ResourceLoader.h
     )
 
-set( THEFORGE_INTERFACES_FILES 
-    include/Renderer/Interfaces/IApp.h
-    include/Renderer/Interfaces/IFileSystem.h
-    include/Renderer/Interfaces/ILog.h
-    include/Renderer/Interfaces/IMemory.h
-    include/Renderer/Interfaces/IMiddleware.h
-    include/Renderer/Interfaces/IOperatingSystem.h
-    include/Renderer/Interfaces/IPlatformEvents.h
-    include/Renderer/Interfaces/IProfiler.h
-    include/Renderer/Interfaces/IThread.h
-    include/Renderer/Interfaces/ITime.h
+set_prefix( THEFORGE_INTERFACES_FILES include/Renderer/Interfaces/
+    IApp.h
+    IFileSystem.h
+    ILog.h
+    IMemory.h
+    IMiddleware.h
+    IOperatingSystem.h
+    IPlatformEvents.h
+    IProfiler.h
+    IThread.h
+    ITime.h
 )
 
-set( THEFORGE_IMAGE_H_FILES
-    include/Renderer/Image/Image.h
-    include/Renderer/Image/ImageEnums.h
+set_prefix( THEFORGE_IMAGE_H_FILES include/Renderer/Image/
+    Image.h
+    ImageEnums.h
 )
 
 # EASTL
-set( THEFORGE_EASTL_FILES
-    third_party/EASTL/EAStdC/EASprintf.cpp
-    third_party/EASTL/EAStdC/EAMemory.cpp
-    third_party/EASTL/thread_support.cpp
-    third_party/EASTL/string.cpp
-    third_party/EASTL/red_black_tree.cpp
-    third_party/EASTL/numeric_limits.cpp
-    third_party/EASTL/intrusive_list.cpp
-    third_party/EASTL/hashtable.cpp
-    third_party/EASTL/fixed_pool.cpp
-    third_party/EASTL/assert.cpp
-    third_party/EASTL/allocator_forge.cpp
-    third_party/EASTL/allocator_eastl.cpp
+set_prefix( THEFORGE_EASTL_FILES third_party/EASTL/
+    EAStdC/EASprintf.cpp
+    EAStdC/EAMemory.cpp
+    thread_support.cpp
+    string.cpp
+    red_black_tree.cpp
+    numeric_limits.cpp
+    intrusive_list.cpp
+    hashtable.cpp
+    fixed_pool.cpp
+    assert.cpp
+    allocator_forge.cpp
+    allocator_eastl.cpp
     )
 add_library( EASTL STATIC ${THEFORGE_EASTL_FILES} )
 
 # Core
-set( THEFORGE_CORE_FILES
-    src/OS/Core/Atomics.h
-    src/OS/Core/Compiler.h
-    src/OS/Core/DLL.h
-    src/OS/Core/ThreadSystem.h
-    src/OS/Core/FileSystem.cpp
-    src/OS/Core/GPUConfig.h
-    src/OS/Core/PlatformEvents.cpp
-    src/OS/Core/RingBuffer.h
-    src/OS/Core/ThreadSystem.cpp
-    src/OS/Core/Timer.cpp
+set_prefix( THEFORGE_CORE_FILES src/OS/Core/
+    Atomics.h
+    Compiler.h
+    DLL.h
+    ThreadSystem.h
+    FileSystem.cpp
+    GPUConfig.h
+    PlatformEvents.cpp
+    RingBuffer.h
+    ThreadSystem.cpp
+    Timer.cpp
     )
 
 # Image
@@ -157,9 +162,9 @@ set( THEFORGE_IMAGE_FILES
     )
 
 # Logging
-set( THEFORGE_LOGGING_FILES
-    src/OS/Logging/Log.cpp
-    src/OS/Logging/Log.h
+set_prefix( THEFORGE_LOGGING_FILES src/OS/Logging/
+    Log.cpp
+    Log.h
     )
 install( FILES src/OS/Logging/Log.h
         DESTINATION include/Renderer/Logging )
@@ -170,9 +175,9 @@ set( THEFORGE_MATH_FILES
     )
 
 # Memory Tracking
-set( THEFORGE_MEMORYTRACKING_FILES
-    src/OS/MemoryTracking/NoMemoryDefines.h
-    src/OS/MemoryTracking/MemoryTracking.cpp
+set_prefix( THEFORGE_MEMORYTRACKING_FILES src/OS/MemoryTracking/
+    NoMemoryDefines.h
+    MemoryTracking.cpp
     )
 
 if( USE_MEMORY_TRACKING )
@@ -180,83 +185,83 @@ if( USE_MEMORY_TRACKING )
 endif()
 
 # Common
-set( THEFORGE_COMMON_FILES
-    src/Renderer/CommonShaderReflection.cpp
-    src/Renderer/GpuProfiler.cpp
-    src/Renderer/ResourceLoader.cpp
+set_prefix( THEFORGE_COMMON_FILES src/Renderer/
+    CommonShaderReflection.cpp
+    GpuProfiler.cpp
+    ResourceLoader.cpp
     )
 
 # Platform interfaces
-set( THEFORGE_ANDROID_FILES 
-    src/OS/Android/AndroidBase.cpp
-    src/OS/Android/AndroidFileSystem.cpp
-    src/OS/Android/AndroidLog.cpp
-    src/OS/Android/AndroidThread.cpp
-    src/OS/Android/AndroidTime.cpp
+set_prefix( THEFORGE_ANDROID_FILES src/OS/Android/
+    AndroidBase.cpp
+    AndroidFileSystem.cpp
+    AndroidLog.cpp
+    AndroidThread.cpp
+    AndroidTime.cpp
     )
-set( THEFORGE_IOS_FILES 
-    src/OS/iOS/AppDelegate.h
-    src/OS/iOS/AppDelegate.m
-    src/OS/iOS/iOSBase.cpp
-    src/OS/iOS/iOSBase.mm
-    src/OS/iOS/iOSFileSystem.mm
-    src/OS/iOS/iOSLog.cpp
-    src/OS/iOS/iOSThread.cpp
+set_prefix( THEFORGE_IOS_FILES src/OS/iOS/
+    AppDelegate.h
+    AppDelegate.m
+    iOSBase.cpp
+    iOSBase.mm
+    iOSFileSystem.mm
+    iOSLog.cpp
+    iOSThread.cpp
     )
-set( THEFORGE_LINUX_FILES 
-    src/OS/Linux/LinuxBase.cpp
-    src/OS/Linux/LinuxFileSystem.cpp
-    src/OS/Linux/LinuxLog.cpp
-    src/OS/Linux/LinuxThread.cpp
-    src/OS/Linux/LinuxTime.cpp
+set_prefix( THEFORGE_LINUX_FILES src/OS/Linux/
+    LinuxBase.cpp
+    LinuxFileSystem.cpp
+    LinuxLog.cpp
+    LinuxThread.cpp
+    LinuxTime.cpp
     )
-set( THEFORGE_MACOS_FILES 
-    src/OS/macOS/AppDelegate.h
-    src/OS/macOS/AppDelegate.m
-    src/OS/macOS/macOSBase.mm
-    src/OS/macOS/macOSFileSystem.mm
-    src/OS/macOS/macOSLog.cpp
-    src/OS/macOS/macOSThread.cpp
+set_prefix( THEFORGE_MACOS_FILES src/OS/macOS/
+    AppDelegate.h
+    AppDelegate.m
+    macOSBase.mm
+    macOSFileSystem.mm
+    macOSLog.cpp
+    macOSThread.cpp
     )
-set( THEFORGE_WINDOWS_FILES 
-    src/OS/Windows/WindowsBase.cpp
-    src/OS/Windows/WindowsFileSystem.cpp
-    src/OS/Windows/WindowsLog.cpp
-    src/OS/Windows/WindowsThread.cpp
-    src/OS/Windows/WindowsTime.cpp
+set_prefix( THEFORGE_WINDOWS_FILES src/OS/Windows/
+    WindowsBase.cpp
+    WindowsFileSystem.cpp
+    WindowsLog.cpp
+    WindowsThread.cpp
+    WindowsTime.cpp
     )
 
 # Direct3D 11
-set( THEFORGE_DIRECT3D11_FILES
-    src/Renderer/Direct3D11/Direct3D11.cpp
-    src/Renderer/Direct3D11/Direct3D11Commands.h
-    src/Renderer/Direct3D11/Direct3D11Raytracing.cpp
-    src/Renderer/Direct3D11/Direct3D11ShaderReflection.cpp
+set_prefix( THEFORGE_DIRECT3D11_FILES src/Renderer/Direct3D11/
+    Direct3D11.cpp
+    Direct3D11Commands.h
+    Direct3D11Raytracing.cpp
+    Direct3D11ShaderReflection.cpp
     )
 
 # Direct3D 12
-set( THEFORGE_DIRECT3D12_FILES
-    src/Renderer/Direct3D12/Direct3D12.cpp
-    src/Renderer/Direct3D12/Direct3D12Hooks.h
-    src/Renderer/Direct3D12/Direct3D12MemoryAllocator.cpp
-    src/Renderer/Direct3D12/Direct3D12MemoryAllocator.h
-    src/Renderer/Direct3D12/Direct3D12Raytracing.cpp
-    src/Renderer/Direct3D12/Direct3D12ShaderReflection.cpp
+set_prefix( THEFORGE_DIRECT3D12_FILES src/Renderer/Direct3D12/
+    Direct3D12.cpp
+    Direct3D12Hooks.h
+    Direct3D12MemoryAllocator.cpp
+    Direct3D12MemoryAllocator.h
+    Direct3D12Raytracing.cpp
+    Direct3D12ShaderReflection.cpp
     )
 
 # Metal
-set( THEFORGE_METAL_FILES
-    src/Renderer/Metal/MetalMemoryAllocator.h
-    src/Renderer/Metal/MetalRaytracing.mm
-    src/Renderer/Metal/MetalRenderer.mm
-    src/Renderer/Metal/MetalShaderReflection.mm
+set_prefix( THEFORGE_METAL_FILES src/Renderer/Metal/
+    MetalMemoryAllocator.h
+    MetalRaytracing.mm
+    MetalRenderer.mm
+    MetalShaderReflection.mm
     )
 
 # Vulkan
-set( THEFORGE_VULKAN_FILES
-    src/Renderer/Vulkan/Vulkan.cpp
-    src/Renderer/Vulkan/VulkanRaytracing.cpp
-    src/Renderer/Vulkan/VulkanShaderReflection.cpp
+set_prefix( THEFORGE_VULKAN_FILES src/Renderer/Vulkan/
+    Vulkan.cpp
+    VulkanRaytracing.cpp
+    VulkanShaderReflection.cpp
     )
 set( THEFORGE_VULKAN_DEP_FILES
     src/Tools/SpirvTools/SpirvTools.cpp
@@ -486,15 +491,15 @@ if( BUILD_VULKAN )
 endif()
 
 # Profiler
-set( THEFORGE_MICROPROFILE_FILES 
-    third_party/MicroProfile/ProfilerBase.h
-    third_party/MicroProfile/ProfilerHTML.h
-    third_party/MicroProfile/ProfilerUI.h
-    third_party/MicroProfile/Profiler.cpp
-    third_party/MicroProfile/ProfilerBase.cpp
-    third_party/MicroProfile/ProfilerDraw.cpp
-    third_party/MicroProfile/ProfilerInput.cpp
-    third_party/MicroProfile/ProfilerUI.cpp
+set_prefix( THEFORGE_MICROPROFILE_FILES third_party/MicroProfile/
+    ProfilerBase.h
+    ProfilerHTML.h
+    ProfilerUI.h
+    Profiler.cpp
+    ProfilerBase.cpp
+    ProfilerDraw.cpp
+    ProfilerInput.cpp
+    ProfilerUI.cpp
     )
 
 if( BUILD_DIRECT3D11 )
@@ -546,19 +551,19 @@ if( BUILD_EXAMPLES )
                 DESTINATION bin/Examples/Middleware/Text )
     install( DIRECTORY src/Middleware/UI/Shaders
                 DESTINATION bin/Examples/Middleware/UI )
-    set( THEFORGE_CAMERA_FILES
-        src/Examples/Camera/FpsCameraController.cpp
-        src/Examples/Camera/GuiCameraController.cpp
-        src/Examples/Camera/Interfaces/ICameraController.h
+    set_prefix( THEFORGE_CAMERA_FILES src/Examples/Camera/
+        FpsCameraController.cpp
+        GuiCameraController.cpp
+        Interfaces/ICameraController.h
     )
     add_library( TFCamera STATIC ${THEFORGE_CAMERA_FILES} )
 
     option( GAINPUT_BUILD_SHARED "BUILD_SHARED" OFF )
     add_subdirectory( third_party/gainput EXCLUDE_FROM_ALL )
-    set( THEFORGE_INPUT_FILES
-        src/Examples/Input/InputSystem.cpp
-        src/Examples/Input/InputSystem.h
-        src/Examples/Input/InputMappings.h
+    set_prefix( THEFORGE_INPUT_FILES src/Examples/Input/
+        InputSystem.cpp
+        InputSystem.h
+        InputMappings.h
     )
     add_library( TFInput STATIC ${THEFORGE_INPUT_FILES} )
     target_link_libraries( TFInput gainputstatic )
